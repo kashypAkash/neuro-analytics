@@ -5,6 +5,8 @@ library(MASS)
 library(e1071)
 library(corrplot)
 
+setwd("/Users/longnguyen/Documents/295/neuro-analytics/machine_learning")
+
 users = c("APPLE", "CHERRY", "CROCUS", "DAFODIL", 
           "DAISY", "FLOX", "IRIS", "LILY",
           "MAPLE", "ORANGE", "ORCHID", "PEONY", "ROSE",
@@ -48,12 +50,12 @@ for (i in 1:nrow(df_valid_gps_distance)) {
 table(df_accel_filter$type)
 table(df_accel_filter$user, df_accel_filter$type)
 
-xyz_columns <- names(df_accel_filter)[grepl("xyz", names(df_accel_filter))]
+xyz_columns = names(df_accel_filter)[grepl("xyz", names(df_accel_filter))]
 
-df_accel_candidate <- data.frame(df_accel_filter[, names(df_accel_filter) %in% xyz_columns],
+df_accel_candidate = data.frame(df_accel_filter[, names(df_accel_filter) %in% xyz_columns],
                          class = as.factor(df_accel_filter$type))
 
-#df_accel_candidate <- data.frame(df_accel_by_hour_xyz_all[, names(df_accel_by_hour_xyz_all) %in% xyz_columns],
+#df_accel_candidate = data.frame(df_accel_by_hour_xyz_all[, names(df_accel_by_hour_xyz_all) %in% xyz_columns],
 #                         class = as.factor(df_accel_by_hour_xyz_all$type))
 ##########
 
@@ -68,39 +70,39 @@ ggpairs(data = df_accel_candidate,
         aes(color = class),
         title = "Training features")
 
-#tuned <- tune(svm, class ~., data = train_data, kernel = "radial",
+#tuned = tune(svm, class ~., data = train_data, kernel = "radial",
 #              ranges = list(cost = c(0.001, 0.01, 0.1, 1, 10, 100),
 #              gamma = c(0.5, 1, 2, 3, 4)), prior = c(1, 1)/2)
 #summary(tuned)
 #plot(tuned$best.model, train_data, xyz.PSD.3 ~ xyz.PSD.10)
 train_data = df_accel_candidate[, selected_columns]
-mod <- svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
+mod = svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
 save(mod, file = file.path(compress_data, paste0("mod", ".rda")))
 #load(file = file.path(compress_data, paste0("mod", ".rda")))
 
 #print(mod)
 #plot(mod, train_data, xyz_PSD.6 ~ xyz_PSD.10)
 #table(mod$class, train_data$class)
-users <- unique(df_accel_by_hour_xyz_all$user)
+users = unique(df_accel_by_hour_xyz_all$user)
 
-probability_of_pd <- vector(length=length(users))
-predict_result <- vector(length=length(users))
-actual_result <- vector(length=length(users))
+probability_of_pd = vector(length=length(users))
+predict_result = vector(length=length(users))
+actual_result = vector(length=length(users))
 
 for (i in 1:length(users)) {
   print(users[i])
-  #predict_user_index <- df_accel_by_hour_xyz_all$user == users[i]
-  predict_user_index <- df_accel_filter$user == users[i]
+  #predict_user_index = df_accel_by_hour_xyz_all$user == users[i]
+  predict_user_index = df_accel_filter$user == users[i]
   train_data = df_accel_candidate[!predict_user_index, selected_columns]
   test_data = df_accel_candidate[predict_user_index, selected_columns]
-  mod <- svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
+  mod = svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
   record_pred = predict(mod, test_data)
-  single_user_probability_of_pd <- mean(record_pred == "PD")
-  single_user_predict_result <- ifelse(single_user_probability_of_pd > 0.5, "PD", "Control")
+  single_user_probability_of_pd = mean(record_pred == "PD")
+  single_user_predict_result = ifelse(single_user_probability_of_pd > 0.5, "PD", "Control")
   print(single_user_predict_result)
-  probability_of_pd[i] <- single_user_probability_of_pd
-  predict_result[i] <- single_user_predict_result
-  actual_result[i] <- unique(as.character(df_accel_candidate$class[predict_user_index]))
+  probability_of_pd[i] = single_user_probability_of_pd
+  predict_result[i] = single_user_predict_result
+  actual_result[i] = unique(as.character(df_accel_candidate$class[predict_user_index]))
   print(table(record_pred, df_accel_candidate[predict_user_index, ]$class))
 }
 f_accuracy(predict_result, actual_result)
@@ -108,8 +110,8 @@ data.frame(users, probability_of_pd, predict_result, actual_result)
 
 #plot single user
   user = users[3]
-  #user_index <- df_accel_by_hour_xyz_all$user == user
-  user_index <- df_accel_filter$user == user
+  #user_index = df_accel_by_hour_xyz_all$user == user
+  user_index = df_accel_filter$user == user
   ggpairs(data = df_accel_candidate[user_index, ],
           columns = 5:8,
           aes(color = class),
