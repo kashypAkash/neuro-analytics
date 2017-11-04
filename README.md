@@ -2,6 +2,7 @@
 
 ### Contributors (Please add your name)
 * Kashyap, Akash
+* Nguyen, Long
 
 ### Environment setup
 * Server - https://github.com/kashypAkash/neuro-analytics/blob/master/neuro_server/README.md
@@ -14,7 +15,7 @@
 3. please update the changes to master branch
 4. Raise a PR
 
-###NOTE: what to do before PR
+### NOTE: what to do before PR
  - git remote add parent https://github.com/kashypAkash/neuro-analytics.git
  - git pull parent
  - git status  # Make sure the changes are ready to be staged
