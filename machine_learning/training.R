@@ -50,6 +50,8 @@ for (i in 1:nrow(df_valid_gps_distance)) {
 table(df_accel_filter$type)
 table(df_accel_filter$user, df_accel_filter$type)
 
+#df_accel_filter = df_accel_by_hour_xyz_all
+
 xyz_columns = names(df_accel_filter)[grepl("xyz", names(df_accel_filter))]
 
 df_accel_candidate = data.frame(df_accel_filter[, names(df_accel_filter) %in% xyz_columns],
@@ -60,8 +62,8 @@ df_accel_candidate = data.frame(df_accel_filter[, names(df_accel_filter) %in% xy
 ##########
 
 #selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "xyz_mean_sd", "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd", "class")
-#selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd", "class")
-selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "class")
+selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd", "class")
+#selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "class")
 #selected_columns = c("xyz_PSD_6", "xyz_PSD_10","xyz_PSD_6_sd", "xyz_PSD_10_sd", "class")
 
 #plot data
@@ -76,9 +78,25 @@ ggpairs(data = df_accel_candidate,
 #summary(tuned)
 #plot(tuned$best.model, train_data, xyz.PSD.3 ~ xyz.PSD.10)
 train_data = df_accel_candidate[, selected_columns]
+
 mod = svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
 save(mod, file = file.path(compress_data, paste0("mod", ".rda")))
 #load(file = file.path(compress_data, paste0("mod", ".rda")))
+tuned = tune.svm(class~., data = train_data, gamma = 10^-2, cost = 10^2, tunecontrol=tune.control(cross=5))
+summary(tuned)
+
+library(caret)
+library(caTools)
+control = trainControl(method = "cv", number = 5, savePredictions = TRUE, classProbs = TRUE)
+parameterGrid = expand.grid(mtry = c(2,3,4,5))
+modelRandome = train(class ~.,
+                     data = train_data,
+                     method = "rf",
+                     trControl = control,
+                     tuneGrid = parameterGrid
+)
+#save(modelRandome, file = file.path(compress_data, paste0("modelRandome", ".rda")))
+#load(file = file.path(compress_data, paste0("modelRandome", ".rda")))
 
 #print(mod)
 #plot(mod, train_data, xyz_PSD.6 ~ xyz_PSD.10)
@@ -95,8 +113,9 @@ for (i in 1:length(users)) {
   predict_user_index = df_accel_filter$user == users[i]
   train_data = df_accel_candidate[!predict_user_index, selected_columns]
   test_data = df_accel_candidate[predict_user_index, selected_columns]
-  mod = svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
-  record_pred = predict(mod, test_data)
+  #mod = svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
+  #record_pred = predict(mod, test_data)
+  record_pred = predict(modelRandome, test_data)
   single_user_probability_of_pd = mean(record_pred == "PD")
   single_user_predict_result = ifelse(single_user_probability_of_pd > 0.5, "PD", "Control")
   print(single_user_predict_result)
@@ -105,6 +124,7 @@ for (i in 1:length(users)) {
   actual_result[i] = unique(as.character(df_accel_candidate$class[predict_user_index]))
   print(table(record_pred, df_accel_candidate[predict_user_index, ]$class))
 }
+
 f_accuracy(predict_result, actual_result)
 data.frame(users, probability_of_pd, predict_result, actual_result)
 
