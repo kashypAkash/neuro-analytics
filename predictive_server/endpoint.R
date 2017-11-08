@@ -4,8 +4,8 @@ library(dplyr)
 library(scales)
 
 
-#setwd("/home/ec2-user")
-setwd("/Users/longnguyen/Documents/295/neuro-analytics/predictive_server")
+source("/tmp/config.R")
+setwd(workingDirectory)
 
 model_dir = "model"
 #load(file = file.path(model_dir, paste0("mod", ".rda")))
