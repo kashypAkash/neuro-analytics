@@ -2,7 +2,9 @@ library(dplyr)
 library(ggplot2)
 library(geosphere)
 
-setwd("/Users/longnguyen/Documents/295/neuro-analytics/machine_learning")
+source("/tmp/config.R")
+setwd(workingDirectory)
+
 users = c("APPLE", "CHERRY", "CROCUS", "DAFODIL", 
           "DAISY", "FLOX", "IRIS", "LILY",
           "MAPLE", "ORANGE", "ORCHID", "PEONY", "ROSE",
