@@ -3,6 +3,8 @@
 ### Contributors (Please add your name)
 * Kashyap, Akash
 * Nguyen, Long
+* Motoori, Madhuri
+* Kolisetty, Ragavendra
 
 ### Environment setup
 * Server - https://github.com/kashypAkash/neuro-analytics/blob/master/neuro_server/README.md
