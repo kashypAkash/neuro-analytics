@@ -3,6 +3,8 @@
 ### Contributors (Please add your name)
 * Kashyap, Akash
 * Nguyen, Long
+* Motoori, Madhuri
+* Kolisetty, Ragavendra
 
 ### Environment setup
 * Server - https://github.com/kashypAkash/neuro-analytics/blob/master/neuro_server/README.md
@@ -27,3 +29,4 @@
 
 ### Resources
 
+Data input files can be accessed from this link: https://drive.google.com/drive/folders/191mxKTUPH920fNabb5V17ijLnd9ad-2o?usp=sharing
