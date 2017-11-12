@@ -4,7 +4,10 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from models.user import *
 from peewee import *
+
 import datetime as dt
+import csv
+import sys
 
 UPLOAD_FOLDER = './uploads'
 
@@ -79,15 +82,27 @@ class Upload(Resource):
         self.reqparse.add_argument('file', type= FileStorage, required = True, help = 'file is required', location='files')
         self.reqparse.add_argument('username', required = True, help = 'file is required', location = ['form','json'])
 
+    def parse_csv_file(self,filepath):
+        reader = csv.DictReader(open(filepath, 'rb'))
+        dict_list = []
+        for line in reader:
+            dict_list.append(AccelerationUtil(**line).__dict__)
+
+        return dict_list
+
     def post(self):
         args = self.reqparse.parse_args()
         file = args['file']
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
         # return redirect(url_for('uploaded_file', filename=filename))
-        return jsonify({'statusCode': 200, 'result': 'success'})
-
-
+        try:
+            list_of_objs = self.parse_csv_file(os.path.join(UPLOAD_FOLDER, filename))
+            with DATABASE.atomic():
+                Acceleration.insert_many(list_of_objs).execute()
+            return jsonify({'statusCode': 200, 'result': 'success'})
+        except Exception:
+            return jsonify({'statusCode': 404, 'result': 'success'})
 
 
 login_api = Blueprint('resources.validate', __name__)
