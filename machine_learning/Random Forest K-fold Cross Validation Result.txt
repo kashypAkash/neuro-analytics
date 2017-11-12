@@ -1,0 +1,37 @@
+rf variable importance
+
+              Overall
+xyz_mean       135.53
+xyz_PSD_6_sd   121.04
+xyz_PSD_10_sd  117.81
+xyz_PSD_10     110.45
+xyz_PSD_3_sd    99.71
+xyz_PSD_1       95.48
+xyz_PSD_6       90.87
+xyz_PSD_3       88.13
+xyz_PSD_1_sd    85.77
+
+
+#######selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd", "class")
+
+## gps filter
+
+Random Forest 
+
+2103 samples
+   9 predictor
+   2 classes: 'Control', 'PD' 
+
+No pre-processing
+Resampling: Cross-Validated (5 fold) 
+Summary of sample sizes: 1682, 1683, 1683, 1681, 1683 
+Resampling results across tuning parameters:
+
+  mtry  Accuracy   Kappa    
+  2     0.7641370  0.4344127
+  3     0.7660486  0.4416863
+  4     0.7717459  0.4549858
+  5     0.7674602  0.4437707
+
+Accuracy was used to select the optimal model using  the largest value.
+The final value used for the model was mtry = 4.

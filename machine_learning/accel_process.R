@@ -2,12 +2,13 @@ library(dplyr)
 library(ggplot2)
 library(scales)
 
-setwd("/Users/longnguyen/Documents/295/neuro-analytics/machine_learning")
+source("/tmp/config.R")
+setwd(workingDirectory)
 
 users = c("APPLE", "CHERRY", "CROCUS", "DAFODIL", 
-           "DAISY", "FLOX", "IRIS", "LILY",
-           "MAPLE", "ORANGE", "ORCHID", "PEONY", "ROSE",
-           "SUNFLOWER", "SWEETPEA", "VIOLET")
+          "DAISY", "FLOX", "IRIS", "LILY",
+          "MAPLE", "ORANGE", "ORCHID", "PEONY", "ROSE",
+          "SUNFLOWER", "SWEETPEA", "VIOLET")
 csv_data = "csv_data"
 compress_data = "compress_data"
 train_users_csv = file.path(csv_data, "train_users.csv")
@@ -103,7 +104,7 @@ for (user in users) {
               z.PSD.3 = mean(z.PSD.3),
               z.PSD.6 = mean(z.PSD.6),
               z.PSD.10 = mean(z.PSD.10)
-              ) %>%
+    ) %>%
     filter(n.count >= 10) %>% 
     mutate(date = as.POSIXct(day, format = "%Y-%m-%d")) %>%
     ungroup() %>%
@@ -116,20 +117,20 @@ for (user in users) {
   
   df_accel_by_hour_xyz = df_accel_by_hour %>%
     mutate(
-           xyz_mean = f_root_mean_square(x.mean, y.mean, z.mean), 
-           xyz_absolute_deviation = f_root_mean_square(x.absolute.deviation, y.absolute.deviation, z.absolute.deviation),
-           xyz_standard_deviation = f_root_mean_square(x.standard.deviation, y.standard.deviation, z.standard.deviation),
-           xyz_max_deviation = f_root_mean_square(x.max.deviation, y.max.deviation, z.max.deviation),
-           xyz_PSD_1 = f_root_mean_square(x.PSD.1, y.PSD.1, z.PSD.1),
-           xyz_PSD_3 = f_root_mean_square(x.PSD.3, y.PSD.3, z.PSD.3),
-           xyz_PSD_6 = f_root_mean_square(x.PSD.6, y.PSD.6, z.PSD.6),
-           xyz_PSD_10 = f_root_mean_square(x.PSD.10, y.PSD.10, z.PSD.10),
-           xyz_mean_sd = f_root_mean_square(x.mean.sd, y.mean.sd, z.mean.sd), 
-           xyz_PSD_1_sd = f_root_mean_square(x.PSD.1.sd, y.PSD.1.sd, z.PSD.1.sd),
-           xyz_PSD_3_sd = f_root_mean_square(x.PSD.3.sd, y.PSD.3.sd, z.PSD.3.sd),
-           xyz_PSD_6_sd = f_root_mean_square(x.PSD.6.sd, y.PSD.6.sd, z.PSD.6.sd),
-           xyz_PSD_10_sd = f_root_mean_square(x.PSD.10.sd, y.PSD.10.sd, z.PSD.10.sd)
-           ) %>%
+      xyz_mean = f_root_mean_square(x.mean, y.mean, z.mean), 
+      xyz_absolute_deviation = f_root_mean_square(x.absolute.deviation, y.absolute.deviation, z.absolute.deviation),
+      xyz_standard_deviation = f_root_mean_square(x.standard.deviation, y.standard.deviation, z.standard.deviation),
+      xyz_max_deviation = f_root_mean_square(x.max.deviation, y.max.deviation, z.max.deviation),
+      xyz_PSD_1 = f_root_mean_square(x.PSD.1, y.PSD.1, z.PSD.1),
+      xyz_PSD_3 = f_root_mean_square(x.PSD.3, y.PSD.3, z.PSD.3),
+      xyz_PSD_6 = f_root_mean_square(x.PSD.6, y.PSD.6, z.PSD.6),
+      xyz_PSD_10 = f_root_mean_square(x.PSD.10, y.PSD.10, z.PSD.10),
+      xyz_mean_sd = f_root_mean_square(x.mean.sd, y.mean.sd, z.mean.sd), 
+      xyz_PSD_1_sd = f_root_mean_square(x.PSD.1.sd, y.PSD.1.sd, z.PSD.1.sd),
+      xyz_PSD_3_sd = f_root_mean_square(x.PSD.3.sd, y.PSD.3.sd, z.PSD.3.sd),
+      xyz_PSD_6_sd = f_root_mean_square(x.PSD.6.sd, y.PSD.6.sd, z.PSD.6.sd),
+      xyz_PSD_10_sd = f_root_mean_square(x.PSD.10.sd, y.PSD.10.sd, z.PSD.10.sd)
+    ) %>%
     select(starts_with("xyz"), date, hour)
   
   selected_user_index = toupper(df_train_users$Name) == user
