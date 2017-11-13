@@ -1,6 +1,3 @@
-/**
- * Created by akash on 8/14/16.
- */
 "use strict"
  var app = angular.module('spa',['chart.js','ui.router','ui.bootstrap','ngCookies', 'ngStorage']);
     app.config(function($stateProvider, $urlRouterProvider){
@@ -49,6 +46,60 @@
                     },
                     'main@':{
                         templateUrl: 'about.ejs'
+                    }
+                },
+                params: { test: "default value" }
+            })
+            .state('adminHome', {
+                url: "/adminHome",
+                views:{
+                    'navbar@':{
+                        templateUrl: 'navbar.ejs',
+                        controller: 'navBarController'
+                    },
+                    'sidemenu@':{
+                        templateUrl: 'adminSidebarViewPage.ejs',
+                        controller: 'navBarController'
+                    },
+                    'main@':{
+                        templateUrl: 'adminHome.ejs',
+                        controller : 'adminHomeController'
+                    }
+                },
+                params: { test: "default value" }
+            })
+            .state('viewusers', {
+                url: "/viewUsers",
+                views:{
+                    'navbar@':{
+                        templateUrl: 'navbar.ejs',
+                        controller: 'navBarController'
+                    },
+                    'sidemenu@':{
+                        templateUrl: 'adminSidebarViewPage.ejs',
+                        controller: 'navBarController'
+                    },
+                    'main@':{
+                        templateUrl: 'viewusers.ejs',
+                        controller : 'viewUsersController'
+                    }
+                },
+                params: { test: "default value" }
+            })
+            .state('viewallusers', {
+                url: "/viewAllUsers",
+                views:{
+                    'navbar@':{
+                        templateUrl: 'navbar.ejs',
+                        controller: 'navBarController'
+                    },
+                    'sidemenu@':{
+                        templateUrl: 'adminSidebarViewPage.ejs',
+                        controller: 'navBarController'
+                    },
+                    'main@':{
+                        templateUrl: 'viewallusers.ejs',
+                        controller : 'viewAllUsersController'
                     }
                 },
                 params: { test: "default value" }
