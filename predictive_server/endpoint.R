@@ -139,7 +139,7 @@ f_predict = function(email_id="Apple", result_id) {
   predict_result = ifelse(probility_of_pd > 0.5, "PD", "Control")
   
   #update predict result to result table
-  sql = sprintf("update result set classification = '%s' where email_id = '%s' and result_id = %s;", predict_result, email_id, result_id)
+  sql = sprintf("update result set classification = '%s' where email_id = '%s' and id = %s;", predict_result, email_id, result_id)
   rs = dbSendQuery(con, sql)
   dbClearResult(rs)
   
