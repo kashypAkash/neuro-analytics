@@ -1,0 +1,66 @@
+<div class="container-fluid signup-container" style="background-color: white">
+    <div class="row">
+        <div class="col-md-6 signup-logo hidden-sm hidden-xs">
+            <div class="signup-logo-box">
+                <h3 class="signup-logo-title" style="color: white">InfraSense</h3><br>
+                <img class="img-responsive" src="/images/cloud.png" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <form class="form-horizontal signup-form col-md-12 col-sm-6 col-sm-offset-3 col-md-offset-0">
+                <fieldset>
+
+                    <!-- Form Name -->
+                    <legend class="signup-title">Create an Account</legend>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="username">Username</label>
+                        <div class="col-md-6">
+                            <input id="username" name="username" ng-model="new_user" type="text" placeholder="Username" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Text input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="email">Email</label>
+                        <div class="col-md-6">
+                            <input id="email" name="email" ng-model="new_email" type="text" placeholder="Email" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Password input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="password">Password</label>
+                        <div class="col-md-6">
+                            <input id="password" name="password" ng-model="new_password" type="password" placeholder="Password" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Password input-->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="confirm-password">Confirm Password</label>
+                        <div class="col-md-6">
+                            <input id="confirm-password" ng-model="confirm_password" name="confirm-password" type="password" placeholder="Confirm Password" class="form-control input-md" required="">
+
+                        </div>
+                    </div>
+
+                    <!-- Button -->
+                    <div class="form-group">
+                        <label class="col-md-4 control-label" for="signup"></label>
+                        <div class="col-md-6">
+                            <button id="signup" name="signup" ng-click="addNewUser()" class="btn btn-primary btn-block">Sign Up</button>
+                        </div>
+                    </div>
+
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+
