@@ -5,7 +5,7 @@ library(scales)
 
 
 source("/tmp/config.R")
-setwd(workingDirectory)
+setwd(predictiveDirectory)
 
 model_dir = "model"
 #load(file = file.path(model_dir, paste0("mod", ".rda")))
@@ -15,15 +15,15 @@ f_root_mean_square = function(x, y, z) {
   sqrt((x^2 + y^2 + z^2)/3)
 }
 
-con = dbConnect(RMySQL::MySQL(),
-                 user="mark", password="mark",
-                 dbname="test", host="54.191.65.138")
-
 #* @get /predict
-f_predict = function(user="Apple"){
-  print(user)
-  #sql = sprintf("select * from my_accel where user = '%s';", user)
-  sql = sprintf("select * from save_accel where user_name = '%s';", user)
+f_predict = function(email_id="Apple", result_id) {
+  print(paste0("email_id: ", email_id, ", result_id: ", result_id))
+  
+  con = dbConnect(RMySQL::MySQL(),
+                  user=db_user, password=db_password,
+                  dbname=db_name, host=db_host)
+  #sql = sprintf("select * from save_accel where user_name = '%s';", user)
+  sql = sprintf("select * from accel where email_id = '%s' and result_id = %s;", email_id, result_id)
   rs = dbSendQuery(con, sql)
   data = fetch(rs, n=-1)
   huh = dbHasCompleted(rs)
@@ -64,7 +64,7 @@ f_predict = function(user="Apple"){
     select(-daytime_orig, -time_char)  
   
   df_accel_by_hour = df_accel %>%
-    group_by(day, hour) %>%
+    group_by(day, hour, minute) %>%
     summarise(n.count = length(hour),
               x_mean_sd = sd(x_mean),
               x_PSD_1_sd = sd(x_PSD_1),
@@ -127,7 +127,7 @@ f_predict = function(user="Apple"){
       xyz_PSD_6_sd = f_root_mean_square(x_PSD_6_sd, y_PSD_6_sd, z_PSD_6_sd),
       xyz_PSD_10_sd = f_root_mean_square(x_PSD_10_sd, y_PSD_10_sd, z_PSD_10_sd)
     ) %>%
-    select(starts_with("xyz"), date, hour)
+    select(starts_with("xyz"), date, hour, minute)
 
   selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd")
   test_data = df_accel_by_hour_xyz[, selected_columns]
@@ -137,6 +137,13 @@ f_predict = function(user="Apple"){
   probility_of_pd = mean(record_pred == "PD")
   print(probility_of_pd)
   predict_result = ifelse(probility_of_pd > 0.5, "PD", "Control")
+  
+  #update predict result to result table
+  sql = sprintf("update result set classification = '%s' where email_id = '%s' and result_id = %s;", predict_result, email_id, result_id)
+  rs = dbSendQuery(con, sql)
+  dbClearResult(rs)
+  
+  dbDisconnect(con)
   predict_result
 }
 
