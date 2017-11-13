@@ -71,6 +71,42 @@
                 },
                 params: { test: "default value" }
             })
+            .state('currentreport', {
+                url: "/currentReport",
+                views:{
+                    'navbar@':{
+                        templateUrl: 'navbar.ejs',
+                        controller: 'navBarController'
+                    },
+                    'sidemenu@':{
+                        templateUrl: 'sidebarView.ejs',
+                        controller: 'navBarController'
+                    },
+                    'main@':{
+                        templateUrl: 'currentReport.ejs',
+                        controller : 'currentReportController'
+                    }
+                },
+                params: { test: "default value" }
+            })
+            .state('testReports', {
+                url: "/testReports",
+                views:{
+                    'navbar@':{
+                        templateUrl: 'navbar.ejs',
+                        controller: 'navBarController'
+                    },
+                    'sidemenu@':{
+                        templateUrl: 'sidebarView.ejs',
+                        controller: 'navBarController'
+                    },
+                    'main@':{
+                        templateUrl: 'allReports.ejs',
+                        controller : 'testReportsController'
+                    }
+                },
+                params: { test: "default value" }
+            })
             .state('adminprofile', {
                 url: "/adminprofile",
                 views:{
