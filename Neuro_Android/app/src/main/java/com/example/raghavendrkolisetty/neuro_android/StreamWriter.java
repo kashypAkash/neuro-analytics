@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -160,8 +161,8 @@ public class StreamWriter implements SensorEventListener {
                         case OUTPUT_FORMAT_TXT:
                             if (i < (features.length - 1)) {
                                 stream.writeChars(Double.toString(features[i]) + ",");
-                                Log.i("MainActivity","printing just before writing to file");
-                                Log.i("MainActivity",features.length+"");
+//                                Log.i("MainActivity","printing just before writing to file");
+//                                Log.i("MainActivity",features.length+"");
                                 //stream.writeBytes(Double.toString(features[i]) + ",");
                             }
                             else {
@@ -186,6 +187,11 @@ public class StreamWriter implements SensorEventListener {
                             break;
                     }
                 }
+                //stream.writeChars(new Date().toString());
+                Date date = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                String strDate= formatter.format(date);
+                stream.writeChars(","+strDate);
 
                 // New line for CSV files
                 if (outputFormat == OUTPUT_FORMAT_TXT)

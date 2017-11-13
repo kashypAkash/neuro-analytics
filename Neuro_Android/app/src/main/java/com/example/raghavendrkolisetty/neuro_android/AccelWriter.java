@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -18,7 +19,7 @@ public class AccelWriter extends StreamWriter
     private static String STREAM_NAME = "hdl_accel";
 
     private static final int SENSOR_TYPE = Sensor.TYPE_ACCELEROMETER;
-    private static final int SENSOR_RATE = SensorManager.SENSOR_DELAY_FASTEST;
+    private static final int SENSOR_RATE = SensorManager.SENSOR_DELAY_NORMAL;
 
     private static final int STREAM_FEATURES = 26;
     private static final double SENSOR_FRAME_DURATION = 1.0;			// Frame length in seconds
@@ -112,6 +113,15 @@ public class AccelWriter extends StreamWriter
         }
         //sensorStreamFeatures = openStreamFile(STREAM_NAME, timeStamp, Globals.STREAM_EXTENSION_BIN);
         sensorStreamFeatures = openStreamFile(STREAM_NAME, timeStamp, Globals.STREAM_EXTENSION_CSV);
+        try {
+            sensorStreamFeatures.writeChars("diffSecs,N.samples,x.mean,x.absolute.deviation,x.standard.deviation,x.max.deviation,x.PSD.1,"+
+                    "x.PSD.3,x.PSD.6,x.PSD.10,y.mean,y.absolute.deviation,y.standard.deviation,y.max.deviation,y.PSD.1," +
+                    "y.PSD.3,y.PSD.6,y.PSD.10,z.mean,z.absolute.deviation,z.standard.deviation,z.max.deviation,z.PSD.1," +
+            "z.PSD.3,z.PSD.6,z.PSD.10,time");
+            sensorStreamFeatures.writeByte(10);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         isRecording = true;
         writeLogTextLine("Accelerometry recording started");
@@ -162,11 +172,6 @@ public class AccelWriter extends StreamWriter
     {
         if (isRecording)
         {
-//	    	double currentSecs = ((double)event.timestamp)/1000000000.0d;
-//			if (prevSecs == 0)
-//			{
-//				prevSecs = currentSecs;
-//			}
             double currentSecs = (double)(System.currentTimeMillis())/1000.0d;
 
             double diffSecs = currentSecs - prevSecs;
@@ -267,6 +272,7 @@ public class AccelWriter extends StreamWriter
                         }
                         pushFrameFeature(accum/((double)(k - j)));
                     }
+
                 }
 
                 // Write out features
