@@ -1,5 +1,5 @@
-app.controller('navBarController', [ '$scope', '$localStorage', '$window','$http','$cookies',
-    function($scope, $localStorage, $window, $http, $cookies) {
+app.controller('navBarController', [ '$state', '$scope', '$localStorage', '$window','$http','$cookies',
+    function($state, $scope, $localStorage, $window, $http, $cookies) {
 
         $scope.username = $cookies.get('username');
         $(window).unload(function(){
@@ -24,5 +24,9 @@ app.controller('navBarController', [ '$scope', '$localStorage', '$window','$http
             return ($scope.tab === checkTab);
         };
 
-
+        $scope.logout = function(){
+            console.log("here");
+            $cookies.remove('username');
+            $state.go('login')
+        }
     }]);
