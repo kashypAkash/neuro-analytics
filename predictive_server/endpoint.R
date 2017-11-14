@@ -4,7 +4,7 @@ library(dplyr)
 library(scales)
 
 
-source("/tmp/config.R")
+source("~/config.R")
 setwd(predictiveDirectory)
 
 model_dir = "model"
@@ -23,7 +23,7 @@ f_predict = function(email_id="Apple", result_id) {
                   user=db_user, password=db_password,
                   dbname=db_name, host=db_host)
   #sql = sprintf("select * from save_accel where user_name = '%s';", user)
-  sql = sprintf("select * from accel where email_id = '%s' and result_id = %s;", email_id, result_id)
+  sql = sprintf("select * from acceleration where email_id = '%s' and result_id = %s;", email_id, result_id)
   rs = dbSendQuery(con, sql)
   data = fetch(rs, n=-1)
   huh = dbHasCompleted(rs)

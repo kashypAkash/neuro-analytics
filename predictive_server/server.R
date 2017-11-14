@@ -2,7 +2,7 @@
 
 library(plumber)
 
-source("/tmp/config.R")
+source("~/config.R")
 setwd(predictiveDirectory)
 
 r <- plumb("endpoint.R")
