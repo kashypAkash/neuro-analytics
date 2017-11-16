@@ -21,20 +21,19 @@ user_fields = {
 class Login(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email Id is required', location=['form', 'json'])
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
         print(args)
         try:
-            if User.get(User.username == args['username']).password == args['password'] and User.get(
-                            User.username == args['username']).Active == 'Active':
-                return jsonify({'statusCode': 200, 'username': args['username']})
-            elif User.get(User.username == args['username']).password == args['password'] and User.get(
-                            User.username == args['username']).Active == 'Deactivated':
+            if User.get(User.email_id == args['email_id']).password == args['password']: #and User.get(User.email_id == args['email_id']).Active == 'Active':
+                return jsonify({'statusCode': 200, 'email_id': args['email_id']})
+            elif User.get(User.email_id == args['email_id']).password == args['password'] and User.get(
+                            User.email_id == args['email_id']).Active == 'Deactivated':
                 print('Entered')
-                return jsonify({'statusCode': 202})
+                return jsonify({'statusCode': 202, 'accountStatus' : 'Deactivated'})
             else:
                 return jsonify({'statusCode': 400})
         except DoesNotExist:
@@ -44,15 +43,15 @@ class Login(Resource):
 class AdminLogin(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
         print(args)
         try:
-            if Admin.get(Admin.username == args['username']).password == args['password']:
-                return jsonify({'statusCode': 200, 'username': args['username']})
+            if Admin.get(Admin.username == args['email_id']).password == args['password']:
+                return jsonify({'statusCode': 200, 'email id': args['email_id']})
             else:
                 return jsonify({'statusCode': 400})
         except DoesNotExist:
@@ -66,7 +65,7 @@ class Register(Resource):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
-        self.reqparse.add_argument('emailid', required=True, help='email is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
@@ -80,29 +79,48 @@ class Upload(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('file', type= FileStorage, required = True, help = 'file is required', location='files')
-        self.reqparse.add_argument('username', required = True, help = 'file is required', location = ['form','json'])
+        self.reqparse.add_argument('email_id', required = True, help = 'file is required', location = ['form','json'])
 
-    def parse_csv_file(self,filepath):
+    def parse_csv_file(self,filepath, result_id):
         reader = csv.DictReader(open(filepath, 'rb'))
+
         dict_list = []
         for line in reader:
-            dict_list.append(AccelerationUtil(**line).__dict__)
+            temp = AccelerationUtil(**line).__dict__
+            temp['result_id'] = result_id
+            dict_list.append(temp)
 
         return dict_list
 
     def post(self):
         args = self.reqparse.parse_args()
         file = args['file']
+        email_id = args['email_id'].strip()
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, filename))
-        # return redirect(url_for('uploaded_file', filename=filename))
+
         try:
-            list_of_objs = self.parse_csv_file(os.path.join(UPLOAD_FOLDER, filename))
+            cursor = DATABASE.execute_sql('select * from neuro_data.result where id = (select max(id) from neuro_data.result where email_id = %s)', email_id)
+            my_dict = cursor.fetchone()
+
+            if len(my_dict) == 0:
+                # insert the user
+                result = Result(email_id = email_id)
+                if result.save() == 1:
+                    cursor = DATABASE.execute_sql('select * from neuro_data.result where id = (select max(id) from neuro_data.result where email_id = %s)', email_id)
+                    my_dict = cursor.fetchone()
+
+            result_id = my_dict[0]
+            list_of_objs = self.parse_csv_file(os.path.join(UPLOAD_FOLDER, filename),result_id)
+
             with DATABASE.atomic():
                 Acceleration.insert_many(list_of_objs).execute()
+
             return jsonify({'statusCode': 200, 'result': 'success'})
-        except Exception:
-            return jsonify({'statusCode': 404, 'result': 'success'})
+
+            return jsonify({'statusCode': 400, 'result': 'error'})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'result': e.message})
 
 
 login_api = Blueprint('resources.validate', __name__)

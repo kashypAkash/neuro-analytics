@@ -5,7 +5,7 @@ library(MASS)
 library(e1071)
 library(corrplot)
 
-source("/tmp/config.R")
+source("~/config.R")
 setwd(workingDirectory)
 
 users = c("APPLE", "CHERRY", "CROCUS", "DAFODIL", 
