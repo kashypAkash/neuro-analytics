@@ -2,7 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(scales)
 
-source("/tmp/config.R")
+source("~/config.R")
 setwd(workingDirectory)
 
 users = c("APPLE", "CHERRY", "CROCUS", "DAFODIL", 
