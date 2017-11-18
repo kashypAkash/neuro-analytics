@@ -100,14 +100,14 @@ class Upload(Resource):
         file.save(os.path.join(UPLOAD_FOLDER, filename))
 
         try:
-            cursor = DATABASE.execute_sql('select * from neuro_data.result where id = (select max(id) from neuro_data.result where email_id = %s)', email_id)
+            cursor = DATABASE.execute_sql('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s)', email_id)
             my_dict = cursor.fetchone()
 
-            if len(my_dict) == 0:
+            if my_dict is None or len(my_dict) == 0:
                 # insert the user
                 result = Result(email_id = email_id)
                 if result.save() == 1:
-                    cursor = DATABASE.execute_sql('select * from neuro_data.result where id = (select max(id) from neuro_data.result where email_id = %s)', email_id)
+                    cursor = DATABASE.execute_sql('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s)', email_id)
                     my_dict = cursor.fetchone()
 
             result_id = my_dict[0]
