@@ -152,6 +152,18 @@ class Upload(Resource):
         except Exception as e:
             return jsonify({'statusCode': 500, 'result': e.message})
 
+class GetUserCurrentReport(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        user_email = User.get(User.username == args['username']).email_id;
+
+        user_current_result = Result.select().where(Result.email_id == user_email).order_by(Result.date_taken.desc()).limit(1).get();
+        print(user_current_result)
+        return jsonify({'statusCode': 200,'userInfo': json.dumps(model_to_dict(user_current_result), default=str)});
 
 login_api = Blueprint('resources.validate', __name__)
 
@@ -162,3 +174,4 @@ api.add_resource(UpdateProfile, '/api/v1/updateProfile', endpoint='updateprofile
 api.add_resource(GetUserDetails, '/api/v1/getUserDetails', endpoint='getuserdetails')
 api.add_resource(AdminLogin, '/api/v1/adminValidate', endpoint='adminlogin')
 api.add_resource(Upload, '/api/v1/upload', endpoint='fileupload')
+api.add_resource(GetUserCurrentReport, '/api/v1/getUserCurrentReport', endpoint='getusercurrentreport')

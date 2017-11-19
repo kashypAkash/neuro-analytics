@@ -104,6 +104,9 @@ class Result(Model):
     ''' Results Model'''
     email_id = CharField(max_length=128, default=None)
     classification = CharField(max_length=128, default=None)
+    accuracy = DoubleField(null=True)
+    date_taken = DateField(null=True)
+    model_name = CharField(max_length=128, null=True)
 
     class Meta:
         database = DATABASE
