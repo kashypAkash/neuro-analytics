@@ -17,7 +17,7 @@ app.controller('logincontroller', ['$scope', '$http', '$state', '$cookies', func
                     $cookies.put('username', $scope.username);
                     $state.go('about', {'test': $scope.username});
                 } else {
-                    console.log("you are here");
+                    console.log("error");
                 }
             }) .error(function (error) {
                 console.log('error', JSON.stringify(error))

@@ -67,6 +67,27 @@ class Register(Resource):
         User.create(**args)
         return jsonify({'statusCode': 200, 'result': 'success'})
 
+class UpdateProfile(Resource):
+    '''This resource is used for  registering a user'''
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('name', required=True, help='name is required', location=['form', 'json'])
+        self.reqparse.add_argument('gender', required=True, help='gender is required', location=['form', 'json'])
+        self.reqparse.add_argument('date_of_birth', required=True, help='date of birth is required', location=['form', 'json'])
+        self.reqparse.add_argument('telephone', required=True, help='telephone is required', location=['form', 'json'])
+        self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email is required', location=['form', 'json'])
+        self.reqparse.add_argument('location', required=True, help='location is required', location=['form', 'json'])
+        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        print(args)
+        q = User.update(name=args['name'], gender=args['gender'], date_of_birth=args['date_of_birth'],
+                        telephone=args['telephone'], password=args['password'], email_id=args['email_id'],
+            location=args['location']).where(User.username==args['username'])
+        q.execute()
+        return jsonify({'statusCode': 200, 'result': 'success'})
 
 class Upload(Resource):
     ''' This api end point is used for uploading the accelerometer reading file'''
@@ -123,5 +144,6 @@ login_api = Blueprint('resources.validate', __name__)
 api = Api(login_api)
 api.add_resource(Login, '/api/v1/validate', endpoint='login')
 api.add_resource(Register, '/api/v1/register', endpoint='register')
+api.add_resource(UpdateProfile, '/api/v1/updateProfile', endpoint='updateprofile')
 api.add_resource(AdminLogin, '/api/v1/adminValidate', endpoint='adminlogin')
 api.add_resource(Upload, '/api/v1/upload', endpoint='fileupload')
