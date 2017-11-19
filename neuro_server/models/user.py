@@ -15,13 +15,14 @@ class Admin(Model):
 
 class User(Model):
     """A base model that will use our MySQL database"""
-    name = CharField(unique=True)
+    username = CharField(unique=True)
+    name = CharField(max_length=40, null=True)
+    gender = CharField(max_length=40, null=True)
     password = CharField(max_length=40)
-    dateofbirth = CharField(max_length=40)
-    telephone = CharField(max_length=40)
-    location = CharField (max_length=40)
     email_id = CharField(unique=True)
-    active = CharField(max_length=20, default='Active')
+    date_of_birth = CharField(max_length=40, null= True)
+    telephone = CharField(max_length=40, null = True)
+    location = CharField (max_length=40, null = True)
 
     class Meta:
         database = DATABASE

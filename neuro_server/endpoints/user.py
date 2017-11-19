@@ -21,19 +21,15 @@ user_fields = {
 class Login(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email_id', required=True, help='email Id is required', location=['form', 'json'])
+        self.reqparse.add_argument('username', required=True, help='User name is required', location=['form', 'json'])
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
         print(args)
         try:
-            if User.get(User.email_id == args['email_id']).password == args['password']: #and User.get(User.email_id == args['email_id']).Active == 'Active':
-                return jsonify({'statusCode': 200, 'email_id': args['email_id']})
-            elif User.get(User.email_id == args['email_id']).password == args['password'] and User.get(
-                            User.email_id == args['email_id']).Active == 'Deactivated':
-                print('Entered')
-                return jsonify({'statusCode': 202, 'accountStatus' : 'Deactivated'})
+            if User.get(User.username == args['username']).password == args['password']: #and User.get(User.email_id == args['email_id']).Active == 'Active':
+                return jsonify({'statusCode': 200, 'username': args['username']})
             else:
                 return jsonify({'statusCode': 400})
         except DoesNotExist:
@@ -60,7 +56,6 @@ class AdminLogin(Resource):
 
 class Register(Resource):
     '''This resource is used for  registering a user'''
-
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
