@@ -4,6 +4,8 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from models.user import *
 from peewee import *
+from playhouse.shortcuts import model_to_dict
+import json
 
 import datetime as dt
 import csv
@@ -82,12 +84,24 @@ class UpdateProfile(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
-        print(args)
         q = User.update(name=args['name'], gender=args['gender'], date_of_birth=args['date_of_birth'],
                         telephone=args['telephone'], password=args['password'], email_id=args['email_id'],
             location=args['location']).where(User.username==args['username'])
         q.execute()
         return jsonify({'statusCode': 200, 'result': 'success'})
+
+
+class GetUserDetails(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+
+    def post(self):
+        result=[]
+        args = self.reqparse.parse_args()
+        userDetails = User.get(User.username == args['username'])
+
+        return jsonify({'statusCode': 200,'userInfo': json.dumps(model_to_dict(userDetails))});
 
 class Upload(Resource):
     ''' This api end point is used for uploading the accelerometer reading file'''
@@ -145,5 +159,6 @@ api = Api(login_api)
 api.add_resource(Login, '/api/v1/validate', endpoint='login')
 api.add_resource(Register, '/api/v1/register', endpoint='register')
 api.add_resource(UpdateProfile, '/api/v1/updateProfile', endpoint='updateprofile')
+api.add_resource(GetUserDetails, '/api/v1/getUserDetails', endpoint='getuserdetails')
 api.add_resource(AdminLogin, '/api/v1/adminValidate', endpoint='adminlogin')
 api.add_resource(Upload, '/api/v1/upload', endpoint='fileupload')
