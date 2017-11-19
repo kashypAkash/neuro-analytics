@@ -50,9 +50,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
 import static java.lang.System.out;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener{
+public class MainActivity extends AppCompatActivity {
 
     SensorManager mSensorManager;
     Sensor mSensor;
@@ -80,45 +81,25 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         editor.putString(Globals.PREF_KEY_ROOT_PATH,file.toString());
         editor.commit();
 
+        String userEmail = null;
+        try {
+            userEmail = prefs.getString("userEmail",null);
+        }catch (Exception e){
+            System.out.println("exception while getting useremail from prefs");
+        }
         AccelWriter accelWriter = new AccelWriter(context);
-        accelWriter.start(Calendar.getInstance().getTime());
-        accelWriter.init(accelWriter);
+//        accelWriter.start(Calendar.getInstance().getTime(),userEmail);
+//        accelWriter.init(accelWriter);
+        DataCollector dataCollector = new DataCollector(accelWriter,userEmail);
+        Thread thread = new Thread(dataCollector);
+        thread.start();
+        DataUploader dataUploader = new DataUploader(accelWriter,userEmail);
+        Thread uploaderThread = new Thread(dataUploader);
+        uploaderThread.start();
         final String rootPath = accelWriter.getStringPref(Globals.PREF_KEY_ROOT_PATH);
         final Button button = (Button)findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-//                File f = new File(rootPath+
-//                        "/hdl_accel__20171007_110927.csv");
-//                Log.i("MainActivity",f.toString());
-//                BufferedReader br = null;
-//                String line = "";
-//                String cvsSplitBy = ",";
-//
-//                try {
-//
-//                    br = new BufferedReader(new FileReader(f));
-//                    while ((line = br.readLine()) != null) {
-//
-//                        // use comma as separator
-//                        String[] data = line.split(cvsSplitBy);
-//
-//                        out.println("Country [code= " + data[4] + " , name=" + data[5] + "]");
-//
-//                    }
-//
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    if (br != null) {
-//                        try {
-//                            br.close();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
                 Thread t = new Thread(new Runnable(){
                       @Override
                       public void run() {
@@ -155,63 +136,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                       }
                   });
                   t.start();
-//                Log.i("MainActivity","testing it baby");
-//                Log.i("MainActivity","testing it baby");
-//
-//
-
-//
-//                File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath(),
-//                        rootPath+ "/hdl_accel__20171103_225716.csv");
-//
-//                Request2 request2 = new Request2(rootPath+ "/hdl_accel__20171103_225716.csv");
-//                request2.start();
-
-//
-//                Multipart m = new Multipart.Builder()
-//                        .type(Multipart.Type.FORM)
-//                        .addPart(new Part.Builder()
-//                                .body("value")
-//                                .contentDisposition("form-data; name=\"non_file_field\"")
-//                                .build())
-//                        .addPart(new Part.Builder()
-//                                .contentType("text/csv")
-//                                .body(file)
-//                                .contentDisposition("form-data; name=\"file_field\"; filename=\"file1\"")
-//                                .build())
-//                        .build();
-//                OkHttpClient client = new OkHttpClient();
-//                OutputStream out = null;
-//                try {
-//                    URL url = new URL("http://localhost:3000/file");
-//                    HttpURLConnection connection = client.open(url);
-//                    for (Map.Entry<String, String> entry : m.getHeaders().entrySet()) {
-//                        connection.addRequestProperty(entry.getKey(), entry.getValue());
-//                    }
-//                    connection.setRequestMethod("POST");
-//                    // Write the request.
-//                    out = connection.getOutputStream();
-//                    m.writeBodyTo(out);
-//                    out.close();
-//
-//                    // Read the response.
-//                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-//                        throw new IOException("Unexpected HTTP response: "
-//                                + connection.getResponseCode() + " " + connection.getResponseMessage());
-//                    }
-//                } catch (ProtocolException e) {
-//                    e.printStackTrace();
-//                } catch (MalformedURLException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } finally {
-//                    // Clean up.
-//                    try {
-//                        if (out != null) out.close();
-//                    } catch (Exception e) {
-//                    }
-//                }
 
             }
 
@@ -223,16 +147,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String getMimeType(String path){
         String extension = MimeTypeMap.getFileExtensionFromUrl(path);
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        //Log.i("MainActivity","x"+event.values[0]);
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        //Log.i("MainActivity",event.values.toString());
     }
 
 

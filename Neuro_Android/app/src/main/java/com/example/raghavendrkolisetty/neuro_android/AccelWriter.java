@@ -7,8 +7,10 @@ import android.hardware.SensorManager;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by raghavendr.kolisetty on 9/19/17.
@@ -23,6 +25,32 @@ public class AccelWriter extends StreamWriter
 
     private static final int STREAM_FEATURES = 26;
     private static final double SENSOR_FRAME_DURATION = 1.0;			// Frame length in seconds
+
+    public List<String> getListOfFiles() {
+        return listOfFiles;
+    }
+
+    public String getFileFromList(){
+        if(listOfFiles.isEmpty()){
+            return null;
+        }
+        else {
+            return listOfFiles.get(0);
+        }
+    }
+
+    public void removeFileFromList(String fileName){
+        listOfFiles.remove(fileName);
+    }
+
+    public void addFileToList(String file){
+        listOfFiles.add(file);
+    }
+
+    public void setListOfFiles(List<String> listOfFiles) {
+        this.listOfFiles = listOfFiles;
+    }
+
     private static final double SENSOR_MAX_RATE = 100.0;				// Assumed maximum accelerometer sampling rate
     private static int FFT_SIZE = 128;
     private static double[] FREQ_BANDEDGES = {0,1,3,6,10};
@@ -32,6 +60,7 @@ public class AccelWriter extends StreamWriter
     private DataOutputStream sensorStreamRaw = null;
     private DataOutputStream sensorStreamFeatures = null;
 
+    private List<String> listOfFiles;
     private double prevSecs;
     private double prevFrameSecs;
     private double frameTimer = 0;
@@ -44,11 +73,13 @@ public class AccelWriter extends StreamWriter
     private FFT featureFFT = null;
     private Window featureWin = null;
     private static int[] freqBandIdx = null;
+    private String userEmail = null;
 
     public AccelWriter(Context ctx)
     {
         localCtx = ctx;
 
+        listOfFiles = new ArrayList<>();
         sensorManager = (SensorManager)localCtx.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(SENSOR_TYPE);
 
@@ -90,9 +121,18 @@ public class AccelWriter extends StreamWriter
         sensor = null;
     }
 
-    public void start(Date startTime)
+//    public void startUpload(String timestamp){
+//        String rootPath = getStringPref(Globals.PREF_KEY_ROOT_PATH);
+//        String fileName = STREAM_NAME+"__"+timestamp+".csv";
+//        DataUploader uploader = new DataUploader(rootPath,fileName);
+//        Thread thread = new Thread(uploader);
+//        thread.start();
+//    }
+
+    public void start(Date startTime, String userEmail)
     {
         prevSecs = ((double)startTime.getTime())/1000.0d;
+        this.userEmail = userEmail;
 //	    prevSecs = ((double)System.currentTimeMillis())/1000.0d;
         writeLogTextLine("prevSecs: " + prevSecs);
 
@@ -114,10 +154,10 @@ public class AccelWriter extends StreamWriter
         //sensorStreamFeatures = openStreamFile(STREAM_NAME, timeStamp, Globals.STREAM_EXTENSION_BIN);
         sensorStreamFeatures = openStreamFile(STREAM_NAME, timeStamp, Globals.STREAM_EXTENSION_CSV);
         try {
-            sensorStreamFeatures.writeChars("diffSecs,N.samples,x.mean,x.absolute.deviation,x.standard.deviation,x.max.deviation,x.PSD.1,"+
-                    "x.PSD.3,x.PSD.6,x.PSD.10,y.mean,y.absolute.deviation,y.standard.deviation,y.max.deviation,y.PSD.1," +
-                    "y.PSD.3,y.PSD.6,y.PSD.10,z.mean,z.absolute.deviation,z.standard.deviation,z.max.deviation,z.PSD.1," +
-            "z.PSD.3,z.PSD.6,z.PSD.10,time");
+            sensorStreamFeatures.writeChars("diffSecs,N_samples,x_mean,x_absolute_deviation,x_standard_deviation,x_max_deviation,x_PSD_1,"+
+                    "x_PSD_3,x_PSD_6,x_PSD_10,y_mean,y_absolute_deviation,y_standard_deviation,y_max_deviation,y_PSD_1," +
+                    "y_PSD_3,y_PSD_6,y_PSD_10,z_mean,z_absolute_deviation,z_standard_deviation,z_max_deviation,z_PSD_1," +
+            "z_PSD_3,z_PSD_6,z_PSD_10,time,email_id");
             sensorStreamFeatures.writeByte(10);
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,8 +177,7 @@ public class AccelWriter extends StreamWriter
                 writeLogTextLine("Raw accelerometry recording successfully stopped");
             }
         }
-        if (closeStreamFile(sensorStreamFeatures))
-        {
+        if (closeStreamFile(sensorStreamFeatures)) {
             writeLogTextLine("Accelerometry feature recording successfully stopped");
         }
     }
@@ -189,7 +228,7 @@ public class AccelWriter extends StreamWriter
                 accData[1] = X;
                 accData[2] = Y;
                 accData[3] = Z;
-                writeFeatureFrame(accData, sensorStreamRaw, OUTPUT_FORMAT_TXT);
+                writeFeatureFrame(accData, sensorStreamRaw, OUTPUT_FORMAT_TXT,userEmail);
             }
 
             // Store measurement in frame buffer
@@ -276,7 +315,7 @@ public class AccelWriter extends StreamWriter
                 }
 
                 // Write out features
-                writeFeatureFrame(featureBuffer, sensorStreamFeatures, OUTPUT_FORMAT_TXT);
+                writeFeatureFrame(featureBuffer, sensorStreamFeatures, OUTPUT_FORMAT_TXT,userEmail);
 
                 // Reset frame buffer counters
                 frameSamples = 0;

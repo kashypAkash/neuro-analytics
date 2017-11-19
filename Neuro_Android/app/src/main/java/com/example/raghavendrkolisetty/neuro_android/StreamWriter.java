@@ -147,7 +147,7 @@ public class StreamWriter implements SensorEventListener {
 
     }
 
-    public void writeFeatureFrame(double[] features, DataOutputStream stream, int outputFormat)
+    public void writeFeatureFrame(double[] features, DataOutputStream stream, int outputFormat,String userEmail)
     {
         if (stream != null)
         {
@@ -189,9 +189,10 @@ public class StreamWriter implements SensorEventListener {
                 }
                 //stream.writeChars(new Date().toString());
                 Date date = new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SS");
                 String strDate= formatter.format(date);
                 stream.writeChars(","+strDate);
+                stream.writeChars(","+userEmail);
 
                 // New line for CSV files
                 if (outputFormat == OUTPUT_FORMAT_TXT)
