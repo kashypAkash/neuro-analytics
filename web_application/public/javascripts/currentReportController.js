@@ -5,7 +5,6 @@ app.controller('currentReportController', [ '$state', '$scope', '$window','$http
         $scope.username = $cookies.get('username');
 
         $scope.getCurrentResult = function() {
-            console.log("entered");
             $http.post(
 
                 'http://localhost:5000/api/v1/getUserCurrentReport',

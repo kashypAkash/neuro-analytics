@@ -68,8 +68,8 @@
                 },
                 params: { test: "default value" }
             })
-            .state('viewusers', {
-                url: "/viewUsers",
+            .state('viewallusersreports', {
+                url: "/viewAllUsersReports",
                 views:{
                     'navbar@':{
                         templateUrl: 'navbar.ejs',
@@ -80,25 +80,7 @@
                         controller: 'navBarController'
                     },
                     'main@':{
-                        templateUrl: 'viewusers.ejs',
-                        controller : 'viewUsersController'
-                    }
-                },
-                params: { test: "default value" }
-            })
-            .state('viewallusers', {
-                url: "/viewAllUsers",
-                views:{
-                    'navbar@':{
-                        templateUrl: 'navbar.ejs',
-                        controller: 'navBarController'
-                    },
-                    'sidemenu@':{
-                        templateUrl: 'adminSidebarViewPage.ejs',
-                        controller: 'navBarController'
-                    },
-                    'main@':{
-                        templateUrl: 'viewallusers.ejs',
+                        templateUrl: 'viewAllUsersReports.ejs',
                         controller : 'viewAllUsersController'
                     }
                 },

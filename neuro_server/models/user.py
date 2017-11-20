@@ -6,7 +6,7 @@ DATABASE = MySQLDatabase(os.environ['dbdatabase'], user=os.environ['dbuser'], pa
 
 class Admin(Model):
     username = CharField(unique=True)
-    email_id = CharField(unique=True)
+    email_id = CharField(unique=True, null=True)
     password = CharField(max_length=40)
 
     class Meta:

@@ -1,4 +1,4 @@
-<div class="right_col" role="main" ng-init="getSensorHubDetails()">
+<div class="right_col" role="main" ng-init="getUsers()">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
@@ -27,34 +27,15 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">User <span class="required">*</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <select  id="username" name="user" class="select2_group form-control" ng-model="username" ng-options="user.name as user.name for user in userlist">
+                                <select  id="username" name="user" class="select2_group form-control" ng-model="username" ng-options="user.username as user.username for user in users">
                                 </select>
                             </div>
                         </div>
 
-
-                        <!--                        <div class="form-group">
-                                                    <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sensorType">Sensor Type <span class="required">*</span>
-                                                    </label>
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <select id="sensorType" name="sensorType" class="form-control col-md-7 col-xs-12" ng-model="sensorType">
-                                                            <option value="Temperature Sensor">Temperature Sensor</option>
-                                                            <option value="Pressure Sensor">Pressure Sensor</option>
-                                                            <option value="Salinity Sensor">Salinity Sensor</option>
-                                                            <option value="Oxygen Sensor">Oxygen Sensor</option>
-                                                        </select>
-                                                    </div>
-                                                </div>-->
-                        <!--                        <div class="form-group">
-                                                    <label for="middle-name" class="control-label col-md-3 col-sm-3 col-xs-12">Region</label>
-                                                    <div class="col-md-6 col-sm-6 col-xs-12">
-                                                        <input id="middle-name" class="form-control col-md-7 col-xs-12" type="text" name="middle-name">
-                                                    </div>
-                                                </div>-->
                         <div class="ln_solid"></div>
                         <div class="form-group">
                             <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
-                                <button type="submit" class="btn btn-success" id="viewSensorHub" name="viewSensorHub" ng-click="viewUserReports()">View User Report Details</button>
+                                <button type="submit" class="btn btn-success" id="viewUserReports" name="viewUserReports" ng-click="viewUserReports(username)">View User Report Details</button>
                             </div>
                         </div>
 
@@ -101,13 +82,12 @@
                             </thead>
 
                             <tbody>
-                            <tr class="even pointer" ng-repeat="report in reportlist">
+                            <tr class="even pointer" ng-repeat="report in reports">
                                 <td class="a-center " ng-click="viewReport(report)">
                                     <input type="radio" class="flat" name="table_records">
                                 </td>
-                                <td class=" ">{{report.reportId}}</td>
-                                <td class=" ">{{report.reportName}}</td>
-                                <td class=" ">{{report.reportDate}}</td>
+                                <td class=" ">{{report.id}}</td>
+                                <td class=" ">{{report.date_taken}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -151,20 +131,20 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="prediction">Has Parkinson's disease? </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="predictedValue" name="prediction" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.predictedValue}}>
+                                <input type="text" id="predictedValue" name="prediction" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.classification}}>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="accuracy">Prediction Accuracy </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="accuracyValue" name="accuracyValueName" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.accuracyValue}}>
+                                <input type="text" id="accuracyValue" name="accuracyValueName" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.accuracy}}>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date">Date Taken </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="dateTaken" name="dateValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.dateTaken}}>
+                                <input type="text" id="dateTaken" name="dateValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.date_taken}}>
                             </div>
                         </div>
 

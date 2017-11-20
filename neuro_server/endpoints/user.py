@@ -41,15 +41,15 @@ class Login(Resource):
 class AdminLogin(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
+        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
         print(args)
         try:
-            if Admin.get(Admin.username == args['email_id']).password == args['password']:
-                return jsonify({'statusCode': 200, 'email id': args['email_id']})
+            if Admin.get(Admin.username == args['username']).password == args['password']:
+                return jsonify({'statusCode': 200, 'username': args['username']})
             else:
                 return jsonify({'statusCode': 400})
         except DoesNotExist:
@@ -190,6 +190,22 @@ class GetUserReports(Resource):
 
         return jsonify({'statusCode': 200,'reports': result});
 
+class GetAllUsers(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+
+    def post(self):
+        result = []
+        args = self.reqparse.parse_args()
+        users = User.select();
+
+        for user in users:
+            userInfo = {}
+            userInfo['username'] = user.username;
+            result.append(userInfo)
+
+        return jsonify({'statusCode': 200,'users': result});
+
 login_api = Blueprint('resources.validate', __name__)
 
 api = Api(login_api)
@@ -201,3 +217,4 @@ api.add_resource(AdminLogin, '/api/v1/adminValidate', endpoint='adminlogin')
 api.add_resource(Upload, '/api/v1/upload', endpoint='fileupload')
 api.add_resource(GetUserCurrentReport, '/api/v1/getUserCurrentReport', endpoint='getusercurrentreport')
 api.add_resource(GetUserReports, '/api/v1/getUserReports', endpoint='getuserreports')
+api.add_resource(GetAllUsers, '/api/v1/getAllUsers', endpoint='getallusers')
