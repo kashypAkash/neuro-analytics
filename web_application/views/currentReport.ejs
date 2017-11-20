@@ -1,4 +1,4 @@
-<div class="right_col" role="main">
+<div class="right_col" role="main" ng-init="getCurrentResult()">
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
@@ -27,25 +27,25 @@
 
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="prediction" > Has Parkinson's disease ?: </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 0.7%">
                             <label for="predictedValue"> {{predictedValue}} </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="accuracy"> Accuracy : </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 0.7%">
                             <label for="accuracyValue"> {{accuracyValue}} </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateTaken"> Date Taken :</label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 0.7%">
                             <label for="dateTakenValue"> {{dateTaken}} </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name"> Model Considered : </label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="col-md-6 col-sm-6 col-xs-12" style="padding-top: 0.7%">
                             <label for="modelValue"> {{ModelValue}} </label>
                         </div>
                     </div>

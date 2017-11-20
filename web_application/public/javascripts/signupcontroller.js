@@ -5,9 +5,9 @@ app.controller('signupcontroller',['$state', '$scope','$http',function ($state, 
         $http.post(
             'http://localhost:5000/api/v1/register',
             {
-                UserName : $scope.new_user,
-                EmailId : $scope.new_email,
-                Password: $scope.new_password
+                username : $scope.new_user,
+                email_id : $scope.new_email,
+                password: $scope.new_password
             },
             { cors:true}
         )
@@ -24,7 +24,7 @@ app.controller('signupcontroller',['$state', '$scope','$http',function ($state, 
 
             })
             .error(function(error){
-                console.log('error');
+                console.log('error' + JSON.stringify(error));
             });
 
     }

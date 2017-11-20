@@ -5,8 +5,7 @@ from peewee import *
 DATABASE = MySQLDatabase(os.environ['dbdatabase'], user=os.environ['dbuser'], passwd=os.environ['dbpassword'], host=os.environ['dbhost'], port=3306)
 
 class Admin(Model):
-    username = CharField(unique=True)
-    email_id = CharField(unique=True)
+    email_id = CharField(unique=True, null=True)
     password = CharField(max_length=40)
 
     class Meta:
@@ -15,13 +14,13 @@ class Admin(Model):
 
 class User(Model):
     """A base model that will use our MySQL database"""
-    name = CharField(unique=True)
+    name = CharField(max_length=40, null=True)
+    gender = CharField(max_length=40, null=True)
     password = CharField(max_length=40)
-    dateofbirth = CharField(max_length=40)
-    telephone = CharField(max_length=40)
-    location = CharField (max_length=40)
     email_id = CharField(unique=True)
-    active = CharField(max_length=20, default='Active')
+    date_of_birth = CharField(max_length=40, null= True)
+    telephone = CharField(max_length=40, null = True)
+    location = CharField (max_length=40, null = True)
 
     class Meta:
         database = DATABASE
@@ -103,6 +102,9 @@ class Result(Model):
     ''' Results Model'''
     email_id = CharField(max_length=128, default=None)
     classification = CharField(max_length=128, default=None)
+    accuracy = DoubleField(null=True)
+    date_taken = DateField(null=True)
+    model_name = CharField(max_length=128, null=True)
 
     class Meta:
         database = DATABASE

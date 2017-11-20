@@ -2,50 +2,50 @@
 "use strict"
   app.controller('profilecontroller',['$scope','$http','$state','$cookies',function ($scope,$http,$state,$cookies){
 
-    if($cookies.get('username') ==undefined || $cookies.get('username') =='' || $cookies.get('username') == null){
-        //$state.go('admin')
+      $scope.getUserDetails = function() {
+          console.log("entered");
+          $http.post(
 
-
-    }
-    else
-    {
-
-        $scope.test = $state.params.test;
-        $scope.user = $cookies.get('username');
-
-        $scope.logout = function(){
-            $cookies.remove('username');
-            $state.go('login')
-        }
-    }
-
-      $scope.labels = ["January", "February", "March", "April", "May", "June", "July"];
-      $scope.series = ['Series A', 'Series B'];
-      $scope.data = [
-          [65, 59, 80, 81, 56, 55, 40],
-          [28, 48, 40, 19, 86, 27, 90]
-      ];
-      $scope.onClick = function (points, evt) {
-          console.log(points, evt);
+              'http://localhost:5000/api/v1/getUserDetails',
+              {
+                  email_id: $cookies.get('username')
+              },
+              {cors: true}
+              )
+              .success(function (data) {
+                  data = JSON.parse(data.userInfo);
+                  $scope.name = data.name;
+                  $scope.gender = data.gender;
+                  $scope.email_id = data.email_id;
+                  $scope.password = data.password;
+                  $scope.date_of_birth = data.date_of_birth;
+                  $scope.location = data.location;
+                  $scope.telephone = data.telephone;
+              }) .error(function (error) {
+              console.log('error', JSON.stringify(error))
+          })
       };
-      $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
-      $scope.options = {
-          scales: {
-              yAxes: [
-                  {
-                      id: 'y-axis-1',
-                      type: 'linear',
-                      display: true,
-                      position: 'left'
-                  },
-                  {
-                      id: 'y-axis-2',
-                      type: 'linear',
-                      display: true,
-                      position: 'right'
-                  }
-              ]
-          }
-      };
+
+      $scope.updateProfile = function () {
+          $http.post(
+
+              'http://localhost:5000/api/v1/updateProfile',
+              {
+                  name: $scope.name,
+                  gender: $scope.gender,
+                  password: $scope.password,
+                  email_id: $scope.email_id,
+                  date_of_birth: $scope.date_of_birth,
+                  telephone: $scope.telephone,
+                  location: $scope.location
+              },
+              {cors: true}
+          )
+              .success(function (data) {
+
+              }) .error(function (error) {
+              console.log('error', JSON.stringify(error))
+          })
+      }
       
-  }])
+  }]);

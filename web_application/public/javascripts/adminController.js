@@ -3,22 +3,22 @@ app.controller('admincontroller',['$scope','$http','$state','$cookies',function 
 
     $scope.control = "";
     $scope.adminValidate = function(){
-       /* $http.post(
-            host + 'api/v1/adminValidate',
+        console.log("In admin controller");
+        $http.post(
+             'http://localhost:5000/api/v1/adminValidate',
             {
-                username:$scope.username,
+                email_id:$scope.email_id,
                 password:$scope.password
             },
             { cors:true}
-        )
+            )
             .success(function(data){
-
                 if(data.statusCode == 200)
-                {*/
-                    $cookies.put('username',$scope.username);
+                {
+                    $cookies.put('username',$scope.email_id);
                     $cookies.put('isadmin','admin');
-                    $state.go('adminHome',{'test':$scope.username});
-/*                }
+                    $state.go('adminHome',{'test':$scope.email_id});
+               }
                 else
                 {
 
@@ -27,6 +27,6 @@ app.controller('admincontroller',['$scope','$http','$state','$cookies',function 
             })
             .error(function(data){
                 console.log('error');
-            })*/
+            })
     }
 }]);
