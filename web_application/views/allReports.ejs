@@ -1,4 +1,4 @@
-<div class="right_col" role="main">
+<div class="right_col" role="main" ng-init="getUserReports()">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
@@ -39,12 +39,12 @@
                             </thead>
 
                             <tbody>
-                            <tr class="even pointer" ng-repeat="report in reportlist">
+                            <tr class="even pointer" ng-repeat="report in reports">
                                 <td class="a-center " ng-click="viewReport(report)">
                                     <input type="radio" class="flat" name="table_records">
                                 </td>
                                 <td class=" ">{{report.id}}</td>
-                                <td class=" ">{{report.date}}</td>
+                                <td class=" ">{{report.date_taken}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -87,20 +87,20 @@
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="prediction">Has Parkinson's disease? </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="predictedValue" name="prediction" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.predictedValue}}>
+                                <input type="text" id="predictedValue" name="prediction" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.classification}}>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="accuracy">Prediction Accuracy </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="accuracyValue" name="accuracyValueName" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.accuracyValue}}>
+                                <input type="text" id="accuracyValue" name="accuracyValueName" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.accuracy}}>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date">Date Taken </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="dateTaken" name="dateValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.dateTaken}}>
+                                <input type="text" id="dateTaken" name="dateValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.date_taken}}>
                             </div>
                         </div>
 
@@ -108,7 +108,7 @@
                             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modelUsed">Model Used
                             </label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="modelId" name="modelValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.modelName}}>
+                                <input type="text" id="modelId" name="modelValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.model_name}}>
                             </div>
                         </div>
 

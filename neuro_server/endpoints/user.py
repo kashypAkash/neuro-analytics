@@ -165,6 +165,31 @@ class GetUserCurrentReport(Resource):
         print(user_current_result)
         return jsonify({'statusCode': 200,'userInfo': json.dumps(model_to_dict(user_current_result), default=str)});
 
+class GetUserReports(Resource):
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+
+    def post(self):
+        result = []
+        args = self.reqparse.parse_args()
+        user_email = User.get(User.username == args['username']).email_id;
+
+        q = Result.select().where(Result.email_id == user_email);
+        user_reports = q.execute();
+
+        for report in user_reports:
+            report_details = {}
+            report_details['date_taken'] = report.date_taken
+            report_details['accuracy'] = report.accuracy
+            report_details['classification'] = report.classification
+            report_details['model_name'] = report.model_name
+            report_details['id'] = report.id
+
+            result.append(report_details)
+
+        return jsonify({'statusCode': 200,'reports': result});
+
 login_api = Blueprint('resources.validate', __name__)
 
 api = Api(login_api)
@@ -175,3 +200,4 @@ api.add_resource(GetUserDetails, '/api/v1/getUserDetails', endpoint='getuserdeta
 api.add_resource(AdminLogin, '/api/v1/adminValidate', endpoint='adminlogin')
 api.add_resource(Upload, '/api/v1/upload', endpoint='fileupload')
 api.add_resource(GetUserCurrentReport, '/api/v1/getUserCurrentReport', endpoint='getusercurrentreport')
+api.add_resource(GetUserReports, '/api/v1/getUserReports', endpoint='getuserreports')
