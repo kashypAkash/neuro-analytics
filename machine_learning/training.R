@@ -4,6 +4,8 @@ library(GGally)
 library(MASS)
 library(e1071)
 library(corrplot)
+library(caret)
+library(caTools)
 
 source("~/config.R")
 setwd(workingDirectory)
@@ -68,18 +70,64 @@ ggpairs(data = df_accel_candidate,
 
 train_data = df_accel_candidate[, selected_columns]
 
-#SVM training
-mod = svm(class ~., data = train_data, kernel = "radial", cost = 100, gamma = 4, scale = FALSE)
-save(mod, file = file.path(compress_data, paste0("mod", ".rda")))
-#load(file = file.path(compress_data, paste0("mod", ".rda")))
-tuned = tune.svm(class~., data = train_data, gamma = 10^-2, cost = 10^2, tunecontrol=tune.control(cross=5))
-summary(tuned)
-
-#Random Forest
-library(caret)
-library(caTools)
 control = trainControl(method = "cv", number = 5, savePredictions = TRUE, classProbs = TRUE)
 parameterGrid = expand.grid(mtry = c(2,3,4,5))
+
+#LDA
+modelLDA = train(class ~.,
+                     data = train_data,
+                     method = "lda",
+                     trControl = control
+)
+
+modelLDA
+
+#QDA
+modelQDA = train(class ~.,
+                 data = train_data,
+                 method = "qda",
+                 trControl = control
+)
+
+modelQDA
+
+#svmLinear
+modelSvmLinear = train(class ~.,
+                       data = train_data,
+                       method = "svmLinear",
+                       trControl = control
+)
+
+modelSvmLinear
+
+#svmRadial
+modelSvmRadial = train(class ~.,
+                 data = train_data,
+                 method = "svmRadial",
+                 trControl = control
+)
+
+modelSvmRadial
+
+#naive_bayes
+modelNaiveBayes = train(class ~.,
+                       data = train_data,
+                       method = "naive_bayes",
+                       trControl = control
+)
+
+modelNaiveBayes
+
+#k-Nearest Neighbors
+modelNearestNeighbors = train(class ~.,
+                        data = train_data,
+                        method = "knn",
+                        trControl = control
+)
+
+modelNearestNeighbors
+
+#Random Forest
 modelRandome = train(class ~.,
                      data = train_data,
                      method = "rf",
