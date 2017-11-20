@@ -8,11 +8,12 @@ app.controller('viewAllUsersController', [ '$state', '$scope', '$window','$http'
             $http.post(
                 'http://localhost:5000/api/v1/getAllUsers',
                 {
-                    username: $cookies.get('username')
+                    email_id: $cookies.get('username')
                 },
                 {cors: true}
             )
                 .success(function (data) {
+                    console.log(data);
                     $scope.users = data.users;
                 }) .error(function (error) {
                 console.log('error', JSON.stringify(error))
@@ -23,7 +24,7 @@ app.controller('viewAllUsersController', [ '$state', '$scope', '$window','$http'
            $http.post(
                'http://localhost:5000/api/v1/getUserReports',
                {
-                   username: username
+                   email_id: $scope.email_id
                },
                {cors: true}
            )

@@ -7,15 +7,15 @@ app.controller('logincontroller', ['$scope', '$http', '$state', '$cookies', func
         $http.post(
             'http://localhost:5000/api/v1/validate',
             {
-                username: $scope.username,
+                email_id: $scope.email_id,
                 password: $scope.password
             },
             {cors: true}
         )
             .success(function (data) {
                 if (data.statusCode == 200) {
-                    $cookies.put('username', $scope.username);
-                    $state.go('about', {'test': $scope.username});
+                    $cookies.put('username', $scope.email_id);
+                    $state.go('about', {'test': $scope.email_id});
                 } else {
                     console.log("error");
                 }

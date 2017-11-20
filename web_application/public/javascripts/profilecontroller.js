@@ -8,7 +8,7 @@
 
               'http://localhost:5000/api/v1/getUserDetails',
               {
-                  username: $cookies.get('username')
+                  email_id: $cookies.get('username')
               },
               {cors: true}
               )
@@ -37,18 +37,12 @@
                   email_id: $scope.email_id,
                   date_of_birth: $scope.date_of_birth,
                   telephone: $scope.telephone,
-                  location: $scope.location,
-                  username: $cookies.get('username')
+                  location: $scope.location
               },
               {cors: true}
           )
               .success(function (data) {
-                  if (data.statusCode == 200) {
-                      $cookies.put('username', $scope.username);
-                      $state.go('about', {'test': $scope.username});
-                  } else {
-                      console.log("error");
-                  }
+
               }) .error(function (error) {
               console.log('error', JSON.stringify(error))
           })

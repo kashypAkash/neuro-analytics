@@ -8,7 +8,7 @@ app.controller('testReportsController', [ '$state', '$scope', '$window','$http',
 
                 'http://localhost:5000/api/v1/getUserReports',
                 {
-                    username: $cookies.get('username')
+                    email_id: $cookies.get('username')
                 },
                 {cors: true}
             )

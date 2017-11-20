@@ -7,7 +7,7 @@ app.controller('admincontroller',['$scope','$http','$state','$cookies',function 
         $http.post(
              'http://localhost:5000/api/v1/adminValidate',
             {
-                username:$scope.username,
+                email_id:$scope.email_id,
                 password:$scope.password
             },
             { cors:true}
@@ -15,9 +15,9 @@ app.controller('admincontroller',['$scope','$http','$state','$cookies',function 
             .success(function(data){
                 if(data.statusCode == 200)
                 {
-                    $cookies.put('username',$scope.username);
+                    $cookies.put('username',$scope.email_id);
                     $cookies.put('isadmin','admin');
-                    $state.go('adminHome',{'test':$scope.username});
+                    $state.go('adminHome',{'test':$scope.email_id});
                }
                 else
                 {

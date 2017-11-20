@@ -5,7 +5,6 @@ from peewee import *
 DATABASE = MySQLDatabase(os.environ['dbdatabase'], user=os.environ['dbuser'], passwd=os.environ['dbpassword'], host=os.environ['dbhost'], port=3306)
 
 class Admin(Model):
-    username = CharField(unique=True)
     email_id = CharField(unique=True, null=True)
     password = CharField(max_length=40)
 
@@ -15,7 +14,6 @@ class Admin(Model):
 
 class User(Model):
     """A base model that will use our MySQL database"""
-    username = CharField(unique=True)
     name = CharField(max_length=40, null=True)
     gender = CharField(max_length=40, null=True)
     password = CharField(max_length=40)

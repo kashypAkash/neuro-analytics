@@ -23,15 +23,15 @@ user_fields = {
 class Login(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', required=True, help='User name is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
         print(args)
         try:
-            if User.get(User.username == args['username']).password == args['password']: #and User.get(User.email_id == args['email_id']).Active == 'Active':
-                return jsonify({'statusCode': 200, 'username': args['username']})
+            if User.get(User.email_id == args['email_id']).password == args['password']: #and User.get(User.email_id == args['email_id']).Active == 'Active':
+                return jsonify({'statusCode': 200, 'email_id': args['email_id']})
             else:
                 return jsonify({'statusCode': 400})
         except DoesNotExist:
@@ -41,15 +41,15 @@ class Login(Resource):
 class AdminLogin(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email_id is required', location=['form', 'json'])
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
         print(args)
         try:
-            if Admin.get(Admin.username == args['username']).password == args['password']:
-                return jsonify({'statusCode': 200, 'username': args['username']})
+            if Admin.get(Admin.email_id == args['email_id']).password == args['password']:
+                return jsonify({'statusCode': 200, 'email_id': args['email_id']})
             else:
                 return jsonify({'statusCode': 400})
         except DoesNotExist:
@@ -80,13 +80,12 @@ class UpdateProfile(Resource):
         self.reqparse.add_argument('password', required=True, help='password is required', location=['form', 'json'])
         self.reqparse.add_argument('email_id', required=True, help='email is required', location=['form', 'json'])
         self.reqparse.add_argument('location', required=True, help='location is required', location=['form', 'json'])
-        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
         q = User.update(name=args['name'], gender=args['gender'], date_of_birth=args['date_of_birth'],
-                        telephone=args['telephone'], password=args['password'], email_id=args['email_id'],
-            location=args['location']).where(User.username==args['username'])
+                        telephone=args['telephone'], password=args['password'],
+            location=args['location']).where(User.email_id==args['email_id'])
         q.execute()
         return jsonify({'statusCode': 200, 'result': 'success'})
 
@@ -94,12 +93,12 @@ class UpdateProfile(Resource):
 class GetUserDetails(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
 
     def post(self):
         result=[]
         args = self.reqparse.parse_args()
-        userDetails = User.get(User.username == args['username'])
+        userDetails = User.get(User.email_id == args['email_id'])
 
         return jsonify({'statusCode': 200,'userInfo': json.dumps(model_to_dict(userDetails))});
 
@@ -155,27 +154,25 @@ class Upload(Resource):
 class GetUserCurrentReport(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
 
     def post(self):
         args = self.reqparse.parse_args()
-        user_email = User.get(User.username == args['username']).email_id;
 
-        user_current_result = Result.select().where(Result.email_id == user_email).order_by(Result.date_taken.desc()).limit(1).get();
+        user_current_result = Result.select().where(Result.email_id == args['email_id']).order_by(Result.date_taken.desc()).limit(1).get();
         print(user_current_result)
         return jsonify({'statusCode': 200,'userInfo': json.dumps(model_to_dict(user_current_result), default=str)});
 
 class GetUserReports(Resource):
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('username', required=True, help='username is required', location=['form', 'json'])
+        self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
 
     def post(self):
         result = []
         args = self.reqparse.parse_args()
-        user_email = User.get(User.username == args['username']).email_id;
 
-        q = Result.select().where(Result.email_id == user_email);
+        q = Result.select().where(Result.email_id == args['email_id']);
         user_reports = q.execute();
 
         for report in user_reports:
@@ -187,7 +184,7 @@ class GetUserReports(Resource):
             report_details['id'] = report.id
 
             result.append(report_details)
-
+        print(result);
         return jsonify({'statusCode': 200,'reports': result});
 
 class GetAllUsers(Resource):
@@ -201,7 +198,7 @@ class GetAllUsers(Resource):
 
         for user in users:
             userInfo = {}
-            userInfo['username'] = user.username;
+            userInfo['email_id'] = user.email_id;
             result.append(userInfo)
 
         return jsonify({'statusCode': 200,'users': result});
