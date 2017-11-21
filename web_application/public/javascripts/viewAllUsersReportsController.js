@@ -6,7 +6,7 @@ app.controller('viewAllUsersController', [ '$state', '$scope', '$window','$http'
 
         $scope.getUsers = function() {
             $http.post(
-                'http://localhost:5000/api/v1/getAllUsers',
+                'https://flask-upload-app.herokuapp.com/api/v1/getAllUsers',
                 {
                     email_id: $cookies.get('username')
                 },
@@ -22,7 +22,7 @@ app.controller('viewAllUsersController', [ '$state', '$scope', '$window','$http'
 
        $scope.viewUserReports =  function(username) {
            $http.post(
-               'http://localhost:5000/api/v1/getUserReports',
+               'https://flask-upload-app.herokuapp.com/api/v1/getUserReports',
                {
                    email_id: $scope.email_id
                },

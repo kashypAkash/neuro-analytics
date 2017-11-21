@@ -3,7 +3,7 @@ app.controller('signupcontroller',['$state', '$scope','$http',function ($state, 
 
     $scope.addNewUser = function(){
         $http.post(
-            'http://localhost:5000/api/v1/register',
+            'https://flask-upload-app.herokuapp.com/api/v1/register',
             {
                 username : $scope.new_user,
                 email_id : $scope.new_email,

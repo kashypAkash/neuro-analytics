@@ -5,7 +5,7 @@ app.controller('logincontroller', ['$scope', '$http', '$state', '$cookies', func
     $scope.signIn = function () {
 
         $http.post(
-            'http://localhost:5000/api/v1/validate',
+            'https://flask-upload-app.herokuapp.com/api/v1/validate',
             {
                 email_id: $scope.email_id,
                 password: $scope.password
