@@ -5,7 +5,7 @@ app.controller('admincontroller',['$scope','$http','$state','$cookies',function 
     $scope.adminValidate = function(){
         console.log("In admin controller");
         $http.post(
-             'http://localhost:5000/api/v1/adminValidate',
+             'https://flask-upload-app.herokuapp.com/api/v1/adminValidate',
             {
                 email_id:$scope.email_id,
                 password:$scope.password

@@ -6,7 +6,7 @@
           console.log("entered");
           $http.post(
 
-              'http://localhost:5000/api/v1/getUserDetails',
+              'https://flask-upload-app.herokuapp.com/api/v1/getUserDetails',
               {
                   email_id: $cookies.get('username')
               },
@@ -29,7 +29,7 @@
       $scope.updateProfile = function () {
           $http.post(
 
-              'http://localhost:5000/api/v1/updateProfile',
+              'https://flask-upload-app.herokuapp.com/api/v1/updateProfile',
               {
                   name: $scope.name,
                   gender: $scope.gender,
