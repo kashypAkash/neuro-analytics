@@ -107,7 +107,7 @@ f_predict = function(email_id="Apple", result_id) {
               z_PSD_10 = mean(z_PSD_10)
     ) %>%
     filter(n.count >= 10) %>% 
-    mutate(date = as.POSIXct(day, format = "%Y-%m-%d")) %>%
+    mutate(date = as.POSIXct(day, format = "%m/%d/%Y")) %>%
     ungroup() %>%
     select(-c(n.count, day))
   
