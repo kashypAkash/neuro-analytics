@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_restful import reqparse, Resource, Api, marshal_with, marshal, fields
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
@@ -7,11 +7,8 @@ from peewee import *
 from playhouse.shortcuts import model_to_dict
 import json
 
-import datetime as dt
-import csv
-import sys
 
-UPLOAD_FOLDER = './uploads'
+UPLOAD_FOLDER = os.getcwd() + '/uploads'
 
 user_fields = {
     'UserName': fields.String,
@@ -106,27 +103,38 @@ class Upload(Resource):
     ''' This api end point is used for uploading the accelerometer reading file'''
 
     def __init__(self):
-        self.reqparse = reqparse.RequestParser()
-        self.reqparse.add_argument('file', type= FileStorage, required = True, help = 'file is required', location='files')
-        self.reqparse.add_argument('email_id', required = True, help = 'file is required', location = ['form','json'])
+        self.reqparse = reqparse.RequestParser(bundle_errors=True)
+        self.reqparse.add_argument('email_id', required = True, help = 'email_id is required', location = ['form','json'])
+        self.reqparse.add_argument('readings', required = True, help = 'readings is required', location = 'json')
 
-    def parse_csv_file(self,filepath, result_id):
-        reader = csv.DictReader(open(filepath, 'rb'))
+
+    def parse_csv_file(self,list_of_readings, result_id):
 
         dict_list = []
-        for line in reader:
-            temp = AccelerationUtil(**line).__dict__
-            temp['result_id'] = result_id
-            dict_list.append(temp)
-
+        # try:
+        #     with codecs.open(filepath, mode='rU',encoding='utf8') as f:
+        #         reader = csv.DictReader(f)
+        #         for line in reader:
+        #             temp = AccelerationUtil(**line).__dict__
+        #             temp['result_id'] = result_id
+        #             dict_list.append(temp)
+        # except csv.Error as e:
+        #     print(reader.line_num)
+        try:
+            for reading in list_of_readings:
+                temp = AccelerationUtil(**reading).__dict__
+                temp['result_id'] = result_id
+                dict_list.append(temp)
+        except Exception as e:
+            pass
         return dict_list
 
     def post(self):
+
         args = self.reqparse.parse_args()
-        file = args['file']
-        email_id = args['email_id'].strip()
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(UPLOAD_FOLDER, filename))
+        readings = request.get_json()['readings']
+        email_id = args['email_id']
+        # readings = args['readings']
 
         try:
             cursor = DATABASE.execute_sql('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s)', email_id)
@@ -140,16 +148,43 @@ class Upload(Resource):
                     my_dict = cursor.fetchone()
 
             result_id = my_dict[0]
-            list_of_objs = self.parse_csv_file(os.path.join(UPLOAD_FOLDER, filename),result_id)
+            list_of_objs = self.parse_csv_file(readings, result_id )
 
             with DATABASE.atomic():
                 Acceleration.insert_many(list_of_objs).execute()
 
-            return jsonify({'statusCode': 200, 'result': 'success'})
-
-            return jsonify({'statusCode': 400, 'result': 'error'})
+            return jsonify({'statusCode': 200, 'result':'success'})
         except Exception as e:
-            return jsonify({'statusCode': 500, 'result': e.message})
+            return jsonify({'statusCode': 500, 'result': str(e)})
+
+
+    # def post(self):
+    #     args = self.reqparse.parse_args()
+    #     file = args['file']
+    #     email_id = args['email_id'].strip()
+    #     filename = secure_filename(file.filename)
+    #     file.save(os.path.join(UPLOAD_FOLDER, filename))
+    #
+    #     try:
+    #         cursor = DATABASE.execute_sql('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s)', email_id)
+    #         my_dict = cursor.fetchone()
+    #
+    #         if my_dict is None or len(my_dict) == 0:
+    #             # insert the user
+    #             result = Result(email_id = email_id)
+    #             if result.save() == 1:
+    #                 cursor = DATABASE.execute_sql('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s)', email_id)
+    #                 my_dict = cursor.fetchone()
+    #
+    #         result_id = my_dict[0]
+    #         list_of_objs = self.parse_csv_file(os.path.join(UPLOAD_FOLDER, filename),result_id )
+    #
+    #         with DATABASE.atomic():
+    #             Acceleration.insert_many(list_of_objs).execute()
+    #
+    #         return jsonify({'statusCode': 200, 'result': 'success'})
+    #     except Exception as e:
+    #         return jsonify({'statusCode': 500, 'result': str(e)})
 
 class GetUserCurrentReport(Resource):
     def __init__(self):
