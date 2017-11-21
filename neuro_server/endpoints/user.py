@@ -1,11 +1,8 @@
 from flask import Blueprint, jsonify, request
-from flask_restful import reqparse, Resource, Api, marshal_with, marshal, fields
-from werkzeug.utils import secure_filename
-from werkzeug.datastructures import FileStorage
-from models.user import *
-from peewee import *
+from flask_restful import reqparse, Resource, Api, fields
 from playhouse.shortcuts import model_to_dict
-import json
+
+from models.user import *
 
 UPLOAD_FOLDER = os.getcwd() + '/uploads'
 
@@ -112,10 +109,10 @@ class Upload(Resource):
         self.reqparse.add_argument('email_id', required=True, help='email_id is required', location=['form', 'json'])
         self.reqparse.add_argument('readings', required=True, help='readings is required', location='json')
 
-    def parse_csv_file(self, list_of_readings, result_id):
+
+    def parse_csv_file(self,list_of_readings, result_id):
 
         dict_list = []
-
         try:
             for reading in list_of_readings:
                 temp = AccelerationUtil(**reading).__dict__
@@ -148,6 +145,7 @@ class Upload(Resource):
                     my_dict = cursor.fetchone()
 
             result_id = my_dict[0]
+
             list_of_objs = self.parse_csv_file(readings, result_id)
 
             with DATABASE.atomic():
