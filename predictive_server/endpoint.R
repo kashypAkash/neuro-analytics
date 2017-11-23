@@ -19,9 +19,17 @@ f_root_mean_square = function(x, y, z) {
 f_predict = function(email_id="Apple", result_id) {
   print(paste0("email_id: ", email_id, ", result_id: ", result_id))
   
-  con = dbConnect(RMySQL::MySQL(),
-                  user=db_user, password=db_password,
-                  dbname=db_name, host=db_host)
+  con = tryCatch(
+    if (dbIsValid(con)) {
+      con
+    }
+  , error = function(e) {
+    print("Create a new Mysql connection...")
+    dbConnect(RMySQL::MySQL(),
+                    user=db_user, password=db_password,
+                    dbname=db_name, host=db_host)
+  })
+  
   #sql = sprintf("select * from save_accel where user_name = '%s';", user)
   sql = sprintf("select * from acceleration where email_id = '%s' and result_id = %s;", email_id, result_id)
   rs = dbSendQuery(con, sql)
@@ -107,7 +115,7 @@ f_predict = function(email_id="Apple", result_id) {
               z_PSD_10 = mean(z_PSD_10)
     ) %>%
     filter(n.count >= 10) %>% 
-    mutate(date = as.POSIXct(day, format = "%Y-%m-%d")) %>%
+    mutate(date = as.POSIXct(day, format = "%m/%d/%Y")) %>%
     ungroup() %>%
     select(-c(n.count, day))
   
@@ -143,7 +151,7 @@ f_predict = function(email_id="Apple", result_id) {
   rs = dbSendQuery(con, sql)
   dbClearResult(rs)
   
-  dbDisconnect(con)
+  #dbDisconnect(con)
   predict_result
 }
 
