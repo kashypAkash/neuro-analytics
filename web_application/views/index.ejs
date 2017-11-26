@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html ng-app="spa">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Meta, title, CSS, favicons, etc. -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SPA boilerplate </title>
+
+    <!--Bootstrap Resources-->
+    <link href="https://fonts.googleapis.com/css?family=Kalam" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"
+          integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+    <!--Angular resources-->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-cookies.js"></script>
+    <script src="//unpkg.com/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="/scripts/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.10/ngStorage.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script data-semver="1.4.0-rc.2" src="https://code.angularjs.org/1.4.0-rc.2/angular.js" data-require="angular.js@1.4.x"></script>
+
+    <!-- <script src="//cdn.jsdelivr.net/angular.chartjs/latest/angular-chart.min.js"></script> -->
+
+    <script src="/scripts/chart.js/dist/Chart.min.js"></script>
+    <script src="/scripts/angular-chart.js/dist/angular-chart.min.js"></script>
+
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+
+
+    <!-- Bootstrap -->
+    <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- iCheck -->
+    <link href="/vendors/iCheck/skins/flat/green.css" rel="stylesheet">
+    <!-- bootstrap-progressbar -->
+    <link href="/vendors/bootstrap-progressbar/css/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet">
+    <!-- jVectorMap -->
+    <link href="/vendors/css/maps/jquery-jvectormap-2.0.3.css" rel="stylesheet"/>
+
+    <!-- Custom Theme Style -->
+    <link href="/vendors/css/custom.min.css" rel="stylesheet">
+
+<!--    &lt;!&ndash; jQuery &ndash;&gt;
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+    &lt;!&ndash; Bootstrap &ndash;&gt;
+    <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    &lt;!&ndash; FastClick &ndash;&gt;
+    <script src="/vendors/fastclick/lib/fastclick.js"></script>
+    &lt;!&ndash; NProgress &ndash;&gt;
+    <script src="/vendors/nprogress/nprogress.js"></script>
+    &lt;!&ndash; Chart.js &ndash;&gt;
+    <script src="/vendors/Chart.js/dist/Chart.min.js"></script>
+    &lt;!&ndash; gauge.js &ndash;&gt;
+    <script src="/vendors/bernii/gauge.js/dist/gauge.min.js"></script>
+    &lt;!&ndash; bootstrap-progressbar &ndash;&gt;
+    <script src="/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    &lt;!&ndash; iCheck &ndash;&gt;
+    <script src="/vendors/iCheck/icheck.min.js"></script>
+    &lt;!&ndash; Skycons &ndash;&gt;
+    <script src="/vendors/skycons/skycons.js"></script>
+    &lt;!&ndash; Flot &ndash;&gt;
+    <script src="/vendors/Flot/jquery.flot.js"></script>
+    <script src="/vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="/vendors/Flot/jquery.flot.time.js"></script>
+    <script src="/vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="/vendors/Flot/jquery.flot.resize.js"></script>
+    &lt;!&ndash; Flot plugins &ndash;&gt;
+    <script src="/js/flot/jquery.flot.orderBars.js"></script>
+    <script src="/js/flot/date.js"></script>
+    <script src="/js/flot/jquery.flot.spline.js"></script>
+    <script src="/js/flot/curvedLines.js"></script>
+    &lt;!&ndash; jVectorMap &ndash;&gt;
+    <script src="/js/maps/jquery-jvectormap-2.0.3.min.js"></script>
+    &lt;!&ndash; bootstrap-daterangepicker &ndash;&gt;
+    <script src="/js/moment/moment.min.js"></script>
+    <script src="/js/datepicker/daterangepicker.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <!--<script src="/js/custom.min.js"></script> -->
+
+
+    <script src="/javascripts/Angular.js"></script>
+    <script src="/javascripts/signupcontroller.js"></script>
+    <script src="/javascripts/logincontroller.js"></script>
+    <script src="/javascripts/profilecontroller.js"></script>
+    <script src="/javascripts/navBarController.js"></script>
+    <script src="/javascripts/currentReportController.js"></script>
+    <script src="/javascripts/testReportsController.js"></script>
+    <script src="/javascripts/adminController.js"></script>
+    <script src="/javascripts/adminHomeController.js"></script>
+    <script src="/javascripts/viewAllUsersReportsController.js"></script>
+
+    <!-- jVectorMap -->
+    <script src="/js/maps/jquery-jvectormap-world-mill-en.js"></script>
+    <script src="/js/maps/jquery-jvectormap-us-aea-en.js"></script>
+    <script src="/js/maps/gdp-data.js"></script>
+  </head>
+  <body class="nav-md">
+
+  <div class="container body">
+    <div class="main_container">
+      <div class="col-md-3 left_col">
+          <div ui-view="sidemenu"></div>
+      </div>
+          <div ui-view = "navbar"></div>
+          <div ui-view="main"></div>
+
+    </div>
+  </div>
+
+
+  <!-- Flot -->
+
+  </body>
+
+</html>

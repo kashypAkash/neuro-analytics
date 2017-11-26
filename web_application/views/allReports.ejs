@@ -1,0 +1,120 @@
+<div class="right_col" role="main" ng-init="getUserReports()">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Test Reports </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="x_content">
+
+                    <p>Select a test report to view results</p>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped jambo_table bulk_action">
+                            <thead>
+                            <tr class="headings">
+                                <th>
+                                    <input type="radio" id="check-all" class="flat" ng-hide="true">
+                                </th>
+                                <th class="column-title">Report ID</th>
+                                <th class="column-title">Date Taken</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr class="even pointer" ng-repeat="report in reports">
+                                <td class="a-center " ng-click="viewReport(report)">
+                                    <input type="radio" class="flat" name="table_records">
+                                </td>
+                                <td class=" ">{{report.id}}</td>
+                                <td class=" ">{{report.date_taken}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>View Selected Report</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="reportId">Report ID </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="reportId" name="reportIdValue" required="required" class="form-control col-md-7 col-xs-12" value = {{selectedReport.id}}>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="prediction">Has Parkinson's disease? </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="predictedValue" name="prediction" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.classification}}>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="accuracy">Prediction Accuracy </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="accuracyValue" name="accuracyValueName" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.accuracy}}>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date">Date Taken </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="dateTaken" name="dateValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.date_taken}}>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modelUsed">Model Used
+                            </label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <input type="text" id="modelId" name="modelValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.model_name}}>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>

@@ -1,0 +1,70 @@
+<div class="container-fluid main-container" style="background-color: white">
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+    <div class="row login-box">
+        <div class=" col-sm-6 col-sm-offset-3 col-md-6 login-box-body">
+            <div class="row">
+                <div class="col-md-5  hidden-sm hidden-xs">
+                    <div class="login-logo-box">
+                        <h3 class="logo-title">Neuro Analytics</h3><br>
+                        <img class="img-responsive admin-login-logo" src="/images/logoML.jpeg" />
+                    </div>
+                </div>
+                <div class="col-md-7 col-sm-12 login-box-form">
+                    <form class="form-horizontal login-box-form-body">
+                        <fieldset>
+                            <!-- Form Name -->
+                            <legend class="form-title" style="text-align: left">Administrator</legend>
+                            <!-- Text input-->
+                            <div class="form-group">
+                                <div class="col-md-12 input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span> </span>
+                                    <input id="email_id" name="email_id" ng-model="email_id" type="text" placeholder="Email" class="form-control input-md">
+                                </div>
+                            </div>
+
+                            <!-- Password input-->
+                            <div class="form-group">
+                                <div class="col-md-12 input-group">
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-eye-open"></span></span>
+                                    <input id="password" name="password" ng-model="password" type="password" placeholder="Password" class="form-control input-md">
+                                </div>
+                            </div>
+
+                            <!-- Button -->
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <button id="signin" name="singlebutton" ng-click="adminValidate()" class="btn btn-primary btn-block">Sign In</button>
+                                </div>
+                            </div>
+                            <p style="text-align: right"><a ui-sref = "login">Not a Admin? Go here</a></p>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+    <div class="row blank-space" style="color: white">
+        {{control}}
+    </div>
+</div>
