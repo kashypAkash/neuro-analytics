@@ -37,6 +37,8 @@ f_predict = function(email_id="Apple", result_id) {
   huh = dbHasCompleted(rs)
   dbClearResult(rs)
   
+  print(paste0("number of data rows: ", nrow(data)))
+  
   df_accel = data %>%
     filter(time != "time") %>%
     mutate(x_mean = as.numeric(x_mean),
@@ -139,12 +141,13 @@ f_predict = function(email_id="Apple", result_id) {
 
   selected_columns = c("xyz_mean", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6", "xyz_PSD_10", "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd")
   test_data = df_accel_by_hour_xyz[, selected_columns]
+  print(paste0("number of test rows: ", nrow(test_data)))
   
-  print(head(test_data))
   record_pred = predict(modelRandome, test_data)
   probility_of_pd = mean(record_pred == "PD")
-  print(probility_of_pd)
+  print(paste0("prob: ", probility_of_pd))
   predict_result = ifelse(probility_of_pd > 0.5, "PD", "Control")
+  print(predict_result)
   
   #update predict result to result table
   sql = sprintf("update result set classification = '%s' where email_id = '%s' and id = %s;", predict_result, email_id, result_id)
