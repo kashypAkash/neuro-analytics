@@ -140,7 +140,7 @@ f_predict = function(email_id="Apple", result_id) {
   record_pred = predict(modelRandome, test_data)
   probility_of_pd = mean(record_pred == "PD")
   print(paste0("prob: ", probility_of_pd))
-  predict_result = ifelse(probility_of_pd > 0.5, "PD", "Control")
+  predict_result = ifelse(probility_of_pd > 0.85, "PD", "Control")
   print(predict_result)
   
   #update predict result to result table
@@ -152,7 +152,7 @@ f_predict = function(email_id="Apple", result_id) {
   predict_result
 }
 
-#* @get /data
+#* @get /stat/data
 f_data = function(email_id="Apple", result_id) {
   print(paste0("[f_data] email_id: ", email_id, ", result_id: ", result_id))
   
