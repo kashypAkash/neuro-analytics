@@ -223,12 +223,35 @@ class GetResultIdOfUser(Resource):
 
         try:
             with DATABASE.atomic():
-                cursor = DATABASE.execute_sql('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s and classification = "")', email_id)
-                my_dict = cursor.fetchone()
+                #cursor = DATABASE.execute_sql('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s and classification = "")', email_id)
+                cursor = Result.raw('select * from neuro_db.result where id = (select max(id) from neuro_db.result where email_id = %s and classification = "")', email_id)
+                my_dict = [item for item in cursor.dicts()]
 
             return jsonify({'statusCode': 200, 'details': my_dict});
         except Exception as e:
             return jsonify({'statusCode': 400, 'details': my_dict});
+
+class Dashboard(Resource):
+
+    def __init__(self):
+        self.reqparse = reqparse.RequestParser()
+        self.reqparse.add_argument('email_id', required = True, help = 'email id is required', location = ['form','json'])
+        self.reqparse.add_argument('start_date', required = True, help = 'start date is required', location = ['form','json'])
+        self.reqparse.add_argument('end_date', required = True, help = 'end date is required', location = ['form','json'])
+
+    def post(self):
+        args = self.reqparse.parse_args()
+        email_id = args['email_id']
+        start_date = args['start_date']
+        end_date = args['end_date']
+
+        try:
+            with DATABASE.atomic():
+                cursor = Acceleration.select(Acceleration.time, Acceleration.x_standard_deviation, Acceleration.y_standard_deviation, Acceleration.z_standard_deviation).where(Acceleration.email_id == email_id, Acceleration.time >= start_date, Acceleration.time < end_date).order_by(+Acceleration.time).dicts()
+                return jsonify({'status':200, 'data': list(cursor)})
+        except Exception as e:
+            return jsonify({'status':400, 'error': str(e)})
+
 
 login_api = Blueprint('resources.validate', __name__)
 
@@ -243,3 +266,4 @@ api.add_resource(GetUserCurrentReport, '/api/v1/getUserCurrentReport', endpoint=
 api.add_resource(GetUserReports, '/api/v1/getUserReports', endpoint='getuserreports')
 api.add_resource(GetAllUsers, '/api/v1/getAllUsers', endpoint='getallusers')
 api.add_resource(GetResultIdOfUser, '/api/v1/getResultId', endpoint = 'getresultidofuser')
+api.add_resource(Dashboard, '/api/v1/timeseries', endpoint = 'gettimeseries')
