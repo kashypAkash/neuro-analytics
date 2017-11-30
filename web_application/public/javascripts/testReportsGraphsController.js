@@ -91,9 +91,20 @@ app.controller('testReportsGraphsController', [ '$state', '$scope', '$window','$
 
 
             Highcharts.chart('container', {
-
+                title: {
+                    text: feature + ' values based on minutes'
+                },
                 xAxis: {
+                    title: {
+                        text: 'Minute'
+                    },
                     categories:$scope.minuteValues
+                },
+
+                yAxis: {
+                    title: {
+                        text: feature
+                    }
                 },
 
                 series: [{
