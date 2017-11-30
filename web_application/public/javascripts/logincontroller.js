@@ -1,6 +1,7 @@
 "use strict"
 app.controller('logincontroller', ['$scope', '$http', '$state', '$cookies', function ($scope, $http, $state, $cookies) {
 
+    $scope.errorhide = true;
     $scope.host = "http://0.0.0.0:5000";
     $scope.signIn = function () {
 
@@ -17,9 +18,11 @@ app.controller('logincontroller', ['$scope', '$http', '$state', '$cookies', func
                     $cookies.put('username', $scope.email_id);
                     $state.go('about', {'test': $scope.email_id});
                 } else {
+                    $scope.errorhide = false;
                     console.log("error");
                 }
             }) .error(function (error) {
+                $scope.errorhide = false;
                 console.log('error', JSON.stringify(error))
             })
     }
