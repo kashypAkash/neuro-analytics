@@ -2,7 +2,9 @@ import pymysql, os, json
 
 from peewee import *
 
+
 DATABASE = MySQLDatabase(os.environ['dbdatabase'], user=os.environ['dbuser'], passwd=os.environ['dbpassword'], host=os.environ['dbhost'], port=3306)
+
 
 class Admin(Model):
     email_id = CharField(unique=True, null=True)
@@ -96,10 +98,6 @@ class AccelerationUtil(Model):
         self.email_id = kwargs['email_id']
         # self.result_id = kwargs['result_id']
 
-
-class Payload:
-     def __init__(self, j):
-        self.__dict__ = json.loads(j)
 
 class Result(Model):
 
