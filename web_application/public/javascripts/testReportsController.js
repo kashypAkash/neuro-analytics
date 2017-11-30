@@ -23,4 +23,17 @@ app.controller('testReportsController', [ '$state', '$scope', '$window','$http',
         $scope.viewReport =  function(report) {
             $scope.selectedReport = report;
         }
+
+        $scope.minute = [1,2,3,4,5];
+        $scope.price = [ 22,23,4,5,6]
+        Highcharts.chart('container', {
+
+            xAxis: {
+                categories:$scope.minute
+            },
+
+            series: [{
+                data: $scope.price
+            }]
+        });
     }]);
