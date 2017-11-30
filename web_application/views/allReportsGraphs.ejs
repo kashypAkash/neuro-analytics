@@ -56,7 +56,7 @@
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">
                 <div class="x_title">
-                    <h2>View Selected Report</h2>
+                    <h2>View Graph Of Selected Report</h2>
                     <ul class="nav navbar-right panel_toolbox">
                         <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         </li>
@@ -76,48 +76,63 @@
                 </div>
                 <div class="x_content">
                     <br />
-                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left">
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" >
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="reportId">Report ID </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Date <span class="required">*</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="reportId" name="reportIdValue" required="required" class="form-control col-md-7 col-xs-12" value = {{selectedReport.id}}>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="prediction">Has Parkinson's disease? </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="predictedValue" name="prediction" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.classification}}>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="accuracy">Prediction Accuracy </label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="accuracyValue" name="accuracyValueName" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.accuracy}}>
+                                <select  id="reportDate" name="reportDate" class="select2_group form-control" ng-model="reportDateSelected" ng-options="date as date for date in reportDates"
+                                ng-change="getHour(reportDateSelected)">
+                                </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="date">Date Taken </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Hour <span class="required">*</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="dateTaken" name="dateValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.date_taken}}>
+                                <select  id="reportDateHour" name="reportDateHour" class="select2_group form-control" ng-model="reportDateHourSelected" ng-options="hour as hour for hour in reportDateHours">
+                                </select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="modelUsed">Model Used
-                            </label>
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Feature <span class="required">*</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
-                                <input type="text" id="modelId" name="modelValue" required="required" class="form-control col-md-7 col-xs-12" value={{selectedReport.model_name}}>
+                                <select  id="reportFeature" name="reportFeature" class="select2_group form-control" ng-model="reportFeatureSelected" ng-options="feature as feature for feature in reportFeatures">
+                                </select>
                             </div>
                         </div>
 
+                        <div class="form-group">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                                <button id="send" type="submit" class="btn btn-success" ng-click="drawGraph(reportFeatureSelected)">Go</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div id="container">Placeholder for chart
+        <div class="x_title">
+            <h2>Placeholder for Chart</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
         </div>
+        <div id="container"></div>
+
     </div>
     </div>

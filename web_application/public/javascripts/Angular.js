@@ -140,6 +140,24 @@
                 },
                 params: { test: "default value" }
             })
+            .state('testReportsGraphs', {
+                url: "/testReportsGraphs",
+                views:{
+                    'navbar@':{
+                        templateUrl: 'navbar.ejs',
+                        controller: 'navBarController'
+                    },
+                    'sidemenu@':{
+                        templateUrl: 'sidebarView.ejs',
+                        controller: 'navBarController'
+                    },
+                    'main@':{
+                        templateUrl: 'allReportsGraphs.ejs',
+                        controller : 'testReportsGraphsController'
+                    }
+                },
+                params: { test: "default value" }
+            })
             .state('adminprofile', {
                 url: "/adminprofile",
                 views:{
