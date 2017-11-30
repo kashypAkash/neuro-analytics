@@ -6,7 +6,7 @@ app.controller('testReportsController', [ '$state', '$scope', '$window','$http',
         $scope.getUserReports = function() {
             $http.post(
 
-                'http://localhost:5000/api/v1/getUserReports',
+                'https://flask-upload-app.herokuapp.com/api/v1/getUserReports',
                 {
                     email_id: $cookies.get('username')
                 },

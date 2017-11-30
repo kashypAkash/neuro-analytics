@@ -1,11 +1,12 @@
 "use strict"
 app.controller('logincontroller', ['$scope', '$http', '$state', '$cookies', function ($scope, $http, $state, $cookies) {
 
+    $scope.errorhide = true;
     $scope.host = "http://0.0.0.0:5000";
     $scope.signIn = function () {
 
         $http.post(
-            'http://localhost:5000/api/v1/validate',
+            'https://flask-upload-app.herokuapp.com/api/v1/validate',
             {
                 email_id: $scope.email_id,
                 password: $scope.password
@@ -17,9 +18,11 @@ app.controller('logincontroller', ['$scope', '$http', '$state', '$cookies', func
                     $cookies.put('username', $scope.email_id);
                     $state.go('about', {'test': $scope.email_id});
                 } else {
+                    $scope.errorhide = false;
                     console.log("error");
                 }
             }) .error(function (error) {
+                $scope.errorhide = false;
                 console.log('error', JSON.stringify(error))
             })
     }
