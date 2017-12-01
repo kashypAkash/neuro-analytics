@@ -1,1 +1,182 @@
-<h1>About Page</h1>
+<div class="right_col" role="main" ng-init="getUserReports()">
+
+    <div class="row tile_count">
+        <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count" style="alignment: center">
+            <span class="count_top"><i class="fa fa-user"></i> Result </span>
+            <div class="count">Healthy</div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
+            <span class="count_top"><i class="fa fa-clock-o"></i> Accuracy </span>
+            <div class="count">77%</div>
+        </div>
+        <div class="col-md-4 col-sm-4 col-xs-4 tile_stats_count">
+            <span class="count_top"><i class="fa fa-user"></i> Number of Readings</span>
+            <div class="count green">2,500</div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Test Reports </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="x_content">
+
+                    <p>Select a test report to view results</p>
+
+                    <div class="table-responsive">
+                        <table class="table table-striped jambo_table bulk_action">
+                            <thead>
+                            <tr class="headings">
+                                <th>
+                                    <input type="radio" id="check-all" class="flat" ng-hide="true">
+                                </th>
+                                <th class="column-title">Report ID</th>
+                                <th class="column-title">Date Taken</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr class="even pointer" ng-repeat="report in reports">
+                                <td class="a-center " ng-click="viewReport(report)">
+                                    <input type="radio" class="flat" name="table_records">
+                                </td>
+                                <td class=" ">{{report.id}}</td>
+                                <td class=" ">{{report.date_taken}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+            <div class="col-md-12 col-sm-12 col-xs-12" >
+                <div class="x_panel">
+                    <div class="x_title">
+                <h2>Placeholder for Chart</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Settings 1</a>
+                            </li>
+                            <li><a href="#">Settings 2</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div id="container1" class="col-md-6 col-sm-6 col-xs-6"></div>
+
+        </div>
+            </div>
+
+
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>View Graph Of Selected Feature In Selected Report</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                        <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">Settings 1</a>
+                                </li>
+                                <li><a href="#">Settings 2</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li><a class="close-link"><i class="fa fa-close"></i></a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <br />
+                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" >
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Date <span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select  id="reportDate" name="reportDate" class="select2_group form-control" ng-model="reportDateSelected" ng-options="date as date for date in reportDates"
+                                         ng-change="getHour(reportDateSelected)">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Hour <span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select  id="reportDateHour" name="reportDateHour" class="select2_group form-control" ng-model="reportDateHourSelected" ng-options="hour as hour for hour in reportDateHours">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Feature <span class="required">*</span></label>
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                <select  id="reportFeature" name="reportFeature" class="select2_group form-control" ng-model="reportFeatureSelected" ng-options="feature as feature for feature in reportFeatures">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12 col-sm-12 col-xs-12 col-md-offset-3">
+                                <button id="send" type="submit" class="btn btn-success" ng-click="drawGraph(reportFeatureSelected)">Go</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="x_title">
+            <h2>Placeholder for Chart</h2>
+            <ul class="nav navbar-right panel_toolbox">
+                <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a class="close-link"><i class="fa fa-close"></i></a>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div id="container"></div>
+
+    </div>
+</div>

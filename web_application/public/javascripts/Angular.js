@@ -45,7 +45,8 @@
                         controller: 'navBarController'
                     },
                     'main@':{
-                        templateUrl: 'about.ejs'
+                        templateUrl: 'about.ejs',
+                        controller: 'dashboardController'
                     }
                 },
                 params: { test: "default value" }
