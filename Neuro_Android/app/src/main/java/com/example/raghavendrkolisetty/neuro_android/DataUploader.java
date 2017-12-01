@@ -39,7 +39,7 @@ public class DataUploader implements Runnable{
                 try {
                     Thread.sleep(30 * 1000);
                     fileName = accelWriter.getFileFromList();
-                    Log.i("DataUploader", fileName + "its file name");
+                    //Log.i("DataUploader", fileName + "its file name");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -47,11 +47,11 @@ public class DataUploader implements Runnable{
             File f = new File(rootPath + "/" + "hdl_accel__" + fileName + ".csv");
             String extension = MimeTypeMap.getFileExtensionFromUrl(f.getPath());
             String content_type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            Log.i("DataUploader",content_type); //text/comma-separated-values
+            //Log.i("DataUploader",content_type); //text/comma-separated-values
 
 
             String file_path = f.getAbsolutePath();
-            Log.i("DataUploader","file --> "+file_path.substring(file_path.lastIndexOf("/") + 1));
+            //Log.i("DataUploader","file --> "+file_path.substring(file_path.lastIndexOf("/") + 1));
             OkHttpClient client = new OkHttpClient();
             RequestBody file_body = RequestBody.create(MediaType.parse(content_type), f);
 
@@ -74,11 +74,11 @@ public class DataUploader implements Runnable{
                     throw new IOException("error: " + response);
                 } else {
                     accelWriter.removeFileFromList(fileName);
-                    Log.i("MainActivity", response.toString());
-                    Log.i("DataUploader", response.body().string());
+                    //Log.i("MainActivity", response.toString());
+                    //Log.i("DataUploader", response.body().string());
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
         }
     }

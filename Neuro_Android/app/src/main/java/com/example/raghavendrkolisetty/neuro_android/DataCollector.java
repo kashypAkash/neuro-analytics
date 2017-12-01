@@ -14,7 +14,7 @@ public class DataCollector implements Runnable {
     AccelWriter accelWriter;
     String userEmail;
     int counter;
-    String prevTimeStamp = null;
+//    String prevTimeStamp = null;
 
     public DataCollector(AccelWriter accelWriter,String userEmail){
         this.accelWriter = accelWriter;
@@ -25,11 +25,12 @@ public class DataCollector implements Runnable {
     public void run() {
         while(counter<15) {
             accelWriter.stop(Calendar.getInstance().getTime());
-            if(prevTimeStamp!=null){
-                accelWriter.addFileToList(prevTimeStamp);
-            }
+            accelWriter.closeStreamFile();
+//            if(prevTimeStamp!=null){
+//                accelWriter.addFileToList(prevTimeStamp);
+//            }
             Date currTime = Calendar.getInstance().getTime();
-            prevTimeStamp = DateFormat.format("yyyyMMdd_kkmmss", currTime).toString();
+//            prevTimeStamp = DateFormat.format("yyyyMMdd_kkmmss", currTime).toString();
             accelWriter.start(currTime, userEmail);
             accelWriter.init(accelWriter);
             counter++;

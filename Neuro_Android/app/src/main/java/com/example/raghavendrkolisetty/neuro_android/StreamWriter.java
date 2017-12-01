@@ -216,14 +216,14 @@ public class StreamWriter implements SensorEventListener {
         logTextFileName = rootPath + "/" + streamName + "_" + userID + ".txt";
         File f = new File(logTextFileName);
         boolean t = f.getParentFile().mkdirs();
-        Log.i("MainActivity","is success "+t);
+        //Log.i("MainActivity","is success "+t);
         try
         {
             t = f.createNewFile();
             MediaScannerConnection.scanFile(this.localCtx, new String[] {f.toString()}, null, null);
-            Log.i("MainActivity", "is success "+t);
+            //Log.i("MainActivity", "is success "+t);
             if(f.exists()){
-                Log.i("MainActivity", "it exists");
+                //Log.i("MainActivity", "it exists");
             }
             FileWriter fw = new FileWriter(f,true);
             logTextStream = new BufferedWriter(fw);

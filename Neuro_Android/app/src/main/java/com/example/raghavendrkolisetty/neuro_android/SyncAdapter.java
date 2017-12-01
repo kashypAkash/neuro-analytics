@@ -54,6 +54,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.i("neuro", "reyy onPerformSync() was called");
+        Log.i("neuro", "on performsync");
+        Log.i("neuro", (String)extras.get("email"));
     }
 }

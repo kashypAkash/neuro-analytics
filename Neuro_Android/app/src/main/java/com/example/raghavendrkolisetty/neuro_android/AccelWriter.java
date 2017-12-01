@@ -83,15 +83,15 @@ public class AccelWriter extends StreamWriter
         sensorManager = (SensorManager)localCtx.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorManager.getDefaultSensor(SENSOR_TYPE);
 
-        openLogTextFile(STREAM_NAME, getStringPref(Globals.PREF_KEY_ROOT_PATH));
-        writeLogTextLine("Created " + this.getClass().getName() + " instance");
-        writeLogTextLine("Raw streaming: " + getBooleanPref(Globals.PREF_KEY_RAW_STREAMS_ENABLED));
+//        openLogTextFile(STREAM_NAME, getStringPref(Globals.PREF_KEY_ROOT_PATH));
+//        writeLogTextLine("Created " + this.getClass().getName() + " instance");
+//        writeLogTextLine("Raw streaming: " + getBooleanPref(Globals.PREF_KEY_RAW_STREAMS_ENABLED));
 
         // Allocate frame buffer, assuming a maximum sampling rate
         frameBufferSize = (int)Math.ceil(SENSOR_MAX_RATE/SENSOR_FRAME_DURATION);
         frameBuffer = new double[frameBufferSize][3];
-        writeLogTextLine("Accelerometer maximum frame size (samples): " + frameBufferSize);
-        writeLogTextLine("Accelerometer maximum frame duation (secs): " + SENSOR_FRAME_DURATION);
+//        writeLogTextLine("Accelerometer maximum frame size (samples): " + frameBufferSize);
+//        writeLogTextLine("Accelerometer maximum frame duation (secs): " + SENSOR_FRAME_DURATION);
 
         allocateFrameFeatureBuffer(STREAM_FEATURES);
 
@@ -105,7 +105,7 @@ public class AccelWriter extends StreamWriter
         for (int i = 0; i < FREQ_BANDEDGES.length; i ++)
         {
             freqBandIdx[i] = Math.round((float)FREQ_BANDEDGES[i]*((float)FFT_SIZE/(float)SENSOR_MAX_RATE));
-            writeLogTextLine("Frequency band edge " + i + ": " + Integer.toString(freqBandIdx[i]));
+//            writeLogTextLine("Frequency band edge " + i + ": " + Integer.toString(freqBandIdx[i]));
         }
     }
 
@@ -134,7 +134,7 @@ public class AccelWriter extends StreamWriter
         prevSecs = ((double)startTime.getTime())/1000.0d;
         this.userEmail = userEmail;
 //	    prevSecs = ((double)System.currentTimeMillis())/1000.0d;
-        writeLogTextLine("prevSecs: " + prevSecs);
+//        writeLogTextLine("prevSecs: " + prevSecs);
 
         prevFrameSecs = prevSecs;
         frameTimer = 0;
@@ -164,7 +164,7 @@ public class AccelWriter extends StreamWriter
         }
 
         isRecording = true;
-        writeLogTextLine("Accelerometry recording started");
+//        writeLogTextLine("Accelerometry recording started");
     }
 
     public void stop(Date stopTime)
@@ -174,11 +174,11 @@ public class AccelWriter extends StreamWriter
         {
             if (closeStreamFile(sensorStreamRaw))
             {
-                writeLogTextLine("Raw accelerometry recording successfully stopped");
+//                writeLogTextLine("Raw accelerometry recording successfully stopped");
             }
         }
         if (closeStreamFile(sensorStreamFeatures)) {
-            writeLogTextLine("Accelerometry feature recording successfully stopped");
+//            writeLogTextLine("Accelerometry feature recording successfully stopped");
         }
     }
 
@@ -197,12 +197,12 @@ public class AccelWriter extends StreamWriter
         {
             if (closeStreamFile(oldRaw))
             {
-                writeLogTextLine("Raw accelerometry recording successfully restarted");
+//                writeLogTextLine("Raw accelerometry recording successfully restarted");
             }
         }
         if (closeStreamFile(oldFeatures))
         {
-            writeLogTextLine("Accelerometry feature recording successfully restarted");
+//            writeLogTextLine("Accelerometry feature recording successfully restarted");
         }
     }
 
@@ -329,5 +329,8 @@ public class AccelWriter extends StreamWriter
         }
     }
 
+    public void closeStreamFile() {
+        closeStreamFile(sensorStreamFeatures);
+    }
 }
 

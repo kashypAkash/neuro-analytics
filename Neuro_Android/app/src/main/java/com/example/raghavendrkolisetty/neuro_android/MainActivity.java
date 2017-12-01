@@ -1,5 +1,8 @@
 package com.example.raghavendrkolisetty.neuro_android;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -59,13 +62,49 @@ public class MainActivity extends AppCompatActivity {
     Sensor mSensor;
     private static Context context;
 
+    // The authority for the sync adapter's content provider
+    public static final String AUTHORITY = "com.example.raghavendrkolisetty.neuro_android.provider";
+    // An account type, in the form of a domain name
+    public static final String ACCOUNT_TYPE = "example.com";
+    // The account name
+    public static final String ACCOUNT = "dummyaccount";
+    // Instance fields
+    Account mAccount;
+
+    public static final long SECONDS_PER_MINUTE = 60L;
+    public static final long SYNC_INTERVAL_IN_MINUTES = 1L;
+    public static final long SYNC_INTERVAL =
+            SYNC_INTERVAL_IN_MINUTES *
+                    SECONDS_PER_MINUTE;
+
+    ContentResolver mResolver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAccount = CreateSyncAccount(this);
+        mResolver = getContentResolver();
+        /*
+         * Turn on periodic syncing
+         */
+
+        ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
+
+        if (ContentResolver.getIsSyncable(mAccount, AUTHORITY) == 0) {
+            ContentResolver.setIsSyncable(mAccount, AUTHORITY, 1);
+        }
+
+        Bundle b = new Bundle();
+        b.putString("email","testEmail");
+        ContentResolver.addPeriodicSync(
+                mAccount,
+                AUTHORITY,
+                b,
+                SECONDS_PER_MINUTE*SYNC_INTERVAL_IN_MINUTES);
         MainActivity.context = getApplicationContext();
         File file = context.getExternalFilesDir("accel");
-        Log.i("MainActivity", file.toString());
+        //Log.i("MainActivity", file.toString());
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -75,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     1);
         }
-        Log.i("MainActivity",context.getFilesDir().toString());
+        //Log.i("MainActivity",context.getFilesDir().toString());
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(Globals.PREF_KEY_ROOT_PATH,file.toString());
@@ -93,9 +132,9 @@ public class MainActivity extends AppCompatActivity {
         DataCollector dataCollector = new DataCollector(accelWriter,userEmail);
         Thread thread = new Thread(dataCollector);
         thread.start();
-        DataUploader dataUploader = new DataUploader(accelWriter,userEmail);
-        Thread uploaderThread = new Thread(dataUploader);
-        uploaderThread.start();
+//        DataUploader dataUploader = new DataUploader(accelWriter,userEmail);
+//        Thread uploaderThread = new Thread(dataUploader);
+//        uploaderThread.start();
         final String rootPath = accelWriter.getStringPref(Globals.PREF_KEY_ROOT_PATH);
         final Button button = (Button)findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                                   throw new IOException("error: "+response);
                               }
                               else{
-                                  Log.i("MainActivity",response.toString());
+                                  //Log.i("MainActivity",response.toString());
                               }
                           } catch (IOException e) {
                               e.printStackTrace();
@@ -147,6 +186,37 @@ public class MainActivity extends AppCompatActivity {
     private String getMimeType(String path){
         String extension = MimeTypeMap.getFileExtensionFromUrl(path);
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    }
+
+    @SuppressWarnings ("MissingPermission")
+    public static Account CreateSyncAccount(Context context) {
+        // Create the account type and default account
+        Account newAccount = new Account(
+                ACCOUNT, ACCOUNT_TYPE);
+        // Get an instance of the Android account manager
+        AccountManager accountManager =
+                (AccountManager) context.getSystemService(
+                        ACCOUNT_SERVICE);
+        /*
+         * Add the account and account type, no password or user data
+         * If successful, return the Account object, otherwise report an error.
+         */
+        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+            /*
+             * If you don't set android:syncable="true" in
+             * in your <provider> element in the manifest,
+             * then call context.setIsSyncable(account, AUTHORITY, 1)
+             * here.
+             */
+            System.out.println("inside if");
+        } else {
+            /*
+             * The account exists or some other error occurred. Log this, report it,
+             * or handle it internally.
+             */
+            newAccount = accountManager.getAccountsByType(ACCOUNT_TYPE)[0];
+        }
+        return newAccount;
     }
 
 
