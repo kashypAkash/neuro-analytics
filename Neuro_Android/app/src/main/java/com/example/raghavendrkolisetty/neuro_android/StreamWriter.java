@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -146,7 +147,7 @@ public class StreamWriter implements SensorEventListener {
 
     }
 
-    public void writeFeatureFrame(double[] features, DataOutputStream stream, int outputFormat)
+    public void writeFeatureFrame(double[] features, DataOutputStream stream, int outputFormat,String userEmail)
     {
         if (stream != null)
         {
@@ -160,8 +161,8 @@ public class StreamWriter implements SensorEventListener {
                         case OUTPUT_FORMAT_TXT:
                             if (i < (features.length - 1)) {
                                 stream.writeChars(Double.toString(features[i]) + ",");
-                                Log.i("MainActivity","printing just before writing to file");
-                                Log.i("MainActivity",features.length+"");
+//                                Log.i("MainActivity","printing just before writing to file");
+//                                Log.i("MainActivity",features.length+"");
                                 //stream.writeBytes(Double.toString(features[i]) + ",");
                             }
                             else {
@@ -186,6 +187,12 @@ public class StreamWriter implements SensorEventListener {
                             break;
                     }
                 }
+                //stream.writeChars(new Date().toString());
+                Date date = new Date();
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SS");
+                String strDate= formatter.format(date);
+                stream.writeChars(","+strDate);
+                stream.writeChars(","+userEmail);
 
                 // New line for CSV files
                 if (outputFormat == OUTPUT_FORMAT_TXT)
@@ -209,14 +216,14 @@ public class StreamWriter implements SensorEventListener {
         logTextFileName = rootPath + "/" + streamName + "_" + userID + ".txt";
         File f = new File(logTextFileName);
         boolean t = f.getParentFile().mkdirs();
-        Log.i("MainActivity","is success "+t);
+        //Log.i("MainActivity","is success "+t);
         try
         {
             t = f.createNewFile();
             MediaScannerConnection.scanFile(this.localCtx, new String[] {f.toString()}, null, null);
-            Log.i("MainActivity", "is success "+t);
+            //Log.i("MainActivity", "is success "+t);
             if(f.exists()){
-                Log.i("MainActivity", "it exists");
+                //Log.i("MainActivity", "it exists");
             }
             FileWriter fw = new FileWriter(f,true);
             logTextStream = new BufferedWriter(fw);
