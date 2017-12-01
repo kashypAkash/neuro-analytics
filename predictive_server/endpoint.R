@@ -140,11 +140,12 @@ f_predict = function(email_id="Apple", result_id) {
   record_pred = predict(modelRandome, test_data)
   probility_of_pd = mean(record_pred == "PD")
   print(paste0("prob: ", probility_of_pd))
-  predict_result = ifelse(probility_of_pd > 0.85, "PD", "Control")
+  accuracy = ifelse(probility_of_pd > 0.5, probility_of_pd, 1-probility_of_pd)
+  predict_result = ifelse(probility_of_pd > 0.5, "Parkinson\\'s", "Healthy")
   print(predict_result)
   
   #update predict result to result table
-  sql = sprintf("update result set classification = '%s' where email_id = '%s' and id = %s;", predict_result, email_id, result_id)
+  sql = sprintf("update result set classification = '%s', accuracy = %f, date_taken = CONVERT_TZ(curdate(), 'UTC', 'America/Los_Angeles') where email_id = '%s' and id = %s;", predict_result, accuracy, email_id, result_id)
   rs = dbSendQuery(con, sql)
   dbClearResult(rs)
   
@@ -275,6 +276,32 @@ f_data = function(email_id="Apple", result_id) {
   print(paste0("number of return rows: ", nrow(df_accel_by_hour_xyz)))
   
   df_accel_by_hour_xyz
+}
+
+
+#* @get /stat/all_data
+f_all_data = function(gender="All") {
+  print(paste0("[f_all_data] gender: ", gender))
+  
+  print("Create a new Mysql connection...")
+  con = dbConnect(RMySQL::MySQL(),
+                  user=db_user, password=db_password,
+                  dbname=db_name, host=db_host)
+  print(con)
+  
+  if (gender == "All") {
+    sql = sprintf("select * from training_data;")
+  } else {
+    sql = sprintf("select * from training_data where gender = '%s';", gender)
+  }
+  rs = dbSendQuery(con, sql)
+  data = fetch(rs, n=-1)
+  huh = dbHasCompleted(rs)
+  dbClearResult(rs)
+  dbDisconnect(con)
+  
+  print(paste0("number of data rows: ", nrow(data)))
+  data
 }
 
 
