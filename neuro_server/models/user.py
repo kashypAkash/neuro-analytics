@@ -107,6 +107,7 @@ class Result(Model):
     accuracy = DoubleField(null=True)
     date_taken = DateField(null=True)
     model_name = CharField(max_length=128, null=True)
+    no_of_readings = IntegerField(default=0)
 
     class Meta:
         database = DATABASE

@@ -157,6 +157,7 @@ class Upload(Resource):
 
 
 class GetUserCurrentReport(Resource):
+
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
@@ -169,8 +170,8 @@ class GetUserCurrentReport(Resource):
         print(user_current_result)
         return jsonify({'statusCode': 200, 'userInfo': json.dumps(model_to_dict(user_current_result), default=str)});
 
-
 class GetUserReports(Resource):
+
     def __init__(self):
         self.reqparse = reqparse.RequestParser()
         self.reqparse.add_argument('email_id', required=True, help='email id is required', location=['form', 'json'])
