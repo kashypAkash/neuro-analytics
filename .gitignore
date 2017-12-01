@@ -60,3 +60,5 @@ freeline_project_description.json
 #machine_learning compress data
 machine_learning/compress_data
 */.Rhistory
+
+*/node_modules
