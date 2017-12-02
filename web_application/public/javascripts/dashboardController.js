@@ -21,7 +21,6 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
             )
                 .success(function (data) {
                     $scope.reports =  data.reports;
-                    console.log($scope.reports);
                 }) .error(function (error) {
                 console.log('error', JSON.stringify(error))
             })
@@ -38,7 +37,6 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                 .success(function (data) {
                     $scope.reportData = data;
 
-                    console.log(data[0]);
                     $scope.reportDates = [];
                     var report_dates_u= {};
 
@@ -49,12 +47,14 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                         }
                     }
 
-                    console.log($scope.reportDates);
+                    $scope.predictedValue = report.classification;
+                    $scope.accuracyValue = report.accuracy;
+                    $scope.no_of_readings = report.no_of_readings;
 
 
                 }) .error(function (error) {
                 console.log('error', JSON.stringify(error))
-            })
+            });
 
             $scope.drawGraphs();
         };
@@ -70,8 +70,6 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                     report_dates_hours_u[data[i].hour] = 1;
                 }
             }
-
-            console.log($scope.reportDateHours);
 
         };
 
@@ -121,7 +119,6 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
             )
                 .success(function (data) {
                     console.log(data);
-
                     $scope.healthy_data = [];
                     $scope.unhealthy_data = [];
                     $scope.user_data_values = [];
@@ -228,6 +225,31 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
             })
         };
 
+
+        $scope.getCurrentResult = function() {
+            $http.post(
+
+                'https://flask-upload-app.herokuapp.com/api/v1/getUserCurrentReport',
+                {
+                    email_id: $cookies.get('username')
+                },
+                {cors: true}
+            )
+                .success(function (data) {
+                    data = JSON.parse(data.userInfo);
+
+                    $scope.predictedValue = data.classification;
+                    $scope.accuracyValue = data.accuracy;
+                    $scope.dateTaken = data.date_taken;
+                    $scope.ModelValue = data.model_name;
+                    $scope.no_of_readings = data.no_of_readings;
+                    $scope.viewReport(data);
+                }) .error(function (error) {
+                console.log('error', JSON.stringify(error))
+            })
+
+
+        };
 
 
 
