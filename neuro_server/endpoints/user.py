@@ -28,8 +28,10 @@ class Login(Resource):
                 return jsonify({'statusCode': 200, 'email_id': args['email_id']})
             else:
                 return jsonify({'statusCode': 400})
-        except DoesNotExist:
-            return jsonify({'statusCode': 400})
+        except DoesNotExist as e:
+            return jsonify({'statusCode': 400, 'error': str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
 
 
 class AdminLogin(Resource):
@@ -46,8 +48,10 @@ class AdminLogin(Resource):
                 return jsonify({'statusCode': 200, 'email_id': args['email_id']})
             else:
                 return jsonify({'statusCode': 400})
-        except DoesNotExist:
-            return jsonify({'statusCode': 400})
+        except DoesNotExist as e:
+            return jsonify({'statusCode': 400, 'error':str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
 
 
 class Register(Resource):
@@ -61,8 +65,13 @@ class Register(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
-        User.create(**args)
-        return jsonify({'statusCode': 200, 'result': 'success'})
+        try:
+            User.create(**args)
+            return jsonify({'statusCode': 200, 'result': 'success'})
+        except DatabaseError as e:
+            return jsonify({'statusCode': 400, 'error': str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
 
 
 class UpdateProfile(Resource):
@@ -81,11 +90,17 @@ class UpdateProfile(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
-        q = User.update(name=args['name'], gender=args['gender'], date_of_birth=args['date_of_birth'],
-                        telephone=args['telephone'], password=args['password'],
-                        location=args['location']).where(User.email_id == args['email_id'])
-        q.execute()
-        return jsonify({'statusCode': 200, 'result': 'success'})
+        try:
+            q = User.update(name=args['name'], gender=args['gender'], date_of_birth=args['date_of_birth'],
+                            telephone=args['telephone'], password=args['password'],
+                            location=args['location']).where(User.email_id == args['email_id'])
+            q.execute()
+            return jsonify({'statusCode': 200, 'result': 'success'})
+        except DatabaseError as e:
+            return jsonify({'statusCode': 400, 'error': str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
+
 
 
 class GetUserDetails(Resource):
@@ -96,9 +111,14 @@ class GetUserDetails(Resource):
     def post(self):
         result = []
         args = self.reqparse.parse_args()
-        userDetails = User.get(User.email_id == args['email_id'])
+        try:
+            userDetails = User.get(User.email_id == args['email_id'])
 
-        return jsonify({'statusCode': 200, 'userInfo': json.dumps(model_to_dict(userDetails))});
+            return jsonify({'statusCode': 200, 'userInfo': json.dumps(model_to_dict(userDetails))})
+        except DatabaseError as e:
+            return jsonify({'statusCode': 400, 'error': str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
 
 
 class Upload(Resource):
@@ -164,11 +184,15 @@ class GetUserCurrentReport(Resource):
 
     def post(self):
         args = self.reqparse.parse_args()
-
-        user_current_result = Result.select().where(Result.email_id == args['email_id']).order_by(
-            Result.date_taken.desc()).limit(1).get();
-        print(user_current_result)
-        return jsonify({'statusCode': 200, 'userInfo': json.dumps(model_to_dict(user_current_result), default=str)});
+        try:
+            user_current_result = Result.select().where(Result.email_id == args['email_id']).order_by(
+                Result.date_taken.desc()).limit(1).get();
+            print(user_current_result)
+            return jsonify({'statusCode': 200, 'userInfo': json.dumps(model_to_dict(user_current_result), default=str)})
+        except DatabaseError as e:
+            return jsonify({'statusCode': 400, 'error': str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
 
 class GetUserReports(Resource):
 
@@ -180,20 +204,27 @@ class GetUserReports(Resource):
         result = []
         args = self.reqparse.parse_args()
 
-        q = Result.select().where(Result.email_id == args['email_id']);
-        user_reports = q.execute();
+        try:
+            q = Result.select().where(Result.email_id == args['email_id']);
+            user_reports = q.execute();
 
-        for report in user_reports:
-            report_details = {}
-            report_details['date_taken'] = report.date_taken
-            report_details['accuracy'] = report.accuracy
-            report_details['classification'] = report.classification
-            report_details['model_name'] = report.model_name
-            report_details['id'] = report.id
+            for report in user_reports:
+                report_details = {}
+                report_details['date_taken'] = report.date_taken
+                report_details['accuracy'] = report.accuracy
+                report_details['classification'] = report.classification
+                report_details['model_name'] = report.model_name
+                report_details['id'] = report.id
+                report_details['no_of_readings'] = report.no_of_readings
+                report_details['id'] = report.id
 
-            result.append(report_details)
-        print(result);
-        return jsonify({'statusCode': 200, 'reports': result});
+                result.append(report_details)
+            print(result);
+            return jsonify({'statusCode': 200, 'reports': result})
+        except DatabaseError as e:
+            return jsonify({'statusCode': 400, 'error': str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
 
 
 class GetAllUsers(Resource):
@@ -203,14 +234,19 @@ class GetAllUsers(Resource):
     def post(self):
         result = []
         args = self.reqparse.parse_args()
-        users = User.select();
+        try:
+            users = User.select();
 
-        for user in users:
-            userInfo = {}
-            userInfo['email_id'] = user.email_id;
-            result.append(userInfo)
+            for user in users:
+                userInfo = {}
+                userInfo['email_id'] = user.email_id;
+                result.append(userInfo)
 
-        return jsonify({'statusCode': 200, 'users': result});
+            return jsonify({'statusCode': 200, 'users': result})
+        except DatabaseError as e:
+            return jsonify({'statusCode': 400, 'error': str(e)})
+        except Exception as e:
+            return jsonify({'statusCode': 500, 'error': str(e)})
 
 class GetResultIdOfUser(Resource):
 
