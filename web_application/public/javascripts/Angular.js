@@ -33,8 +33,8 @@
                     }
                 }
             })
-            .state('about', {
-                url: "/about",
+            .state('dashboard', {
+                url: "/dashboard",
                 views:{
                     'navbar@':{
                         templateUrl: 'navbar.ejs',
@@ -45,7 +45,7 @@
                         controller: 'navBarController'
                     },
                     'main@':{
-                        templateUrl: 'about.ejs',
+                        templateUrl: 'dashboard.ejs',
                         controller: 'dashboardController'
                     }
                 },
