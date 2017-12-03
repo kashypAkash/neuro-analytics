@@ -47,7 +47,7 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
 
 
                     $scope.predictedValue = $scope.selectedReport.classification;
-                    $scope.accuracyValue = $scope.selectedReport.accuracy;
+                    $scope.accuracyValue = ($scope.selectedReport.accuracy * 100.0).toFixed(2);
                     $scope.no_of_readings = $scope.selectedReport.no_of_readings;
 
                     $scope.drawGraph("xyz_mean");
@@ -330,7 +330,7 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                     data = JSON.parse(data.userInfo);
 
                     $scope.predictedValue = data.classification;
-                    $scope.accuracyValue = data.accuracy;
+                    $scope.accuracyValue = (data.accuracy * 100.0).toFixed(2);
                     $scope.dateTaken = data.date_taken;
                     $scope.ModelValue = data.model_name;
                     $scope.no_of_readings = data.no_of_readings;
