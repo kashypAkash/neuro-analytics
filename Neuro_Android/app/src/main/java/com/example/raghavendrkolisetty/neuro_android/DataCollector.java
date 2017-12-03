@@ -23,7 +23,7 @@ public class DataCollector implements Runnable {
     }
     @Override
     public void run() {
-        while(counter<15) {
+        while(counter<40) {
             accelWriter.stop(Calendar.getInstance().getTime());
             accelWriter.closeStreamFile();
 //            if(prevTimeStamp!=null){

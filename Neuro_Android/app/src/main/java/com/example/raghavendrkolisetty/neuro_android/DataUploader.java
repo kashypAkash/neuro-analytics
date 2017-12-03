@@ -3,8 +3,19 @@ package com.example.raghavendrkolisetty.neuro_android;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -12,74 +23,74 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * Created by raghavendr.kolisetty on 11/18/17.
  */
-
 public class DataUploader implements Runnable{
-    AccelWriter accelWriter;
-    String rootPath;
-    String fileName;
-    String email;
-    int counter;
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+    JsonData jsonData;
+    String jsonInString;
+    String filePath;
+    ObjectMapper mapper = new ObjectMapper();
+    OkHttpClient client = new OkHttpClient();
 
-    DataUploader(AccelWriter accelWriter,String email){
-        this.accelWriter = accelWriter;
-        this.counter = 0;
-        this.rootPath = accelWriter.getStringPref(Globals.PREF_KEY_ROOT_PATH);
-        this.email = email;
+    DataUploader(JsonData jsonData){
+        this.jsonData = jsonData;
     }
+
+    public DataUploader() {
+
+    }
+
     @Override
     public void run() {
-        //File f = new File(rootPath+ "/hdl_accel__20171007_110927.csv");
-        while (counter < 15) {
-            fileName = accelWriter.getFileFromList();
-            while (fileName == null) {
-                try {
-                    Thread.sleep(30 * 1000);
-                    fileName = accelWriter.getFileFromList();
-                    //Log.i("DataUploader", fileName + "its file name");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        try {
+            jsonInString = mapper.writeValueAsString(jsonData);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        RequestBody body = RequestBody.create(JSON, jsonInString);
+        Request request = new Request.Builder()
+                .url("https://flask-upload-app.herokuapp.com/api/v1/upload")
+                .post(body)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+//            Log.i("DataUploader",response.body().string());
+            String respData = response.body().string();
+            Log.i("DataUploader",respData);
+            JSONObject Jobject = new JSONObject(respData);
+            if(Jobject.getInt("statusCode")==200){
+                if(filePath!=null){
+                    File file = new File(filePath);
+
+                    if(file.delete())
+                    {
+                        System.out.println("File deleted successfully");
+                    }
+                    else
+                    {
+                        System.out.println("Failed to delete the file");
+                    }
                 }
             }
-            File f = new File(rootPath + "/" + "hdl_accel__" + fileName + ".csv");
-            String extension = MimeTypeMap.getFileExtensionFromUrl(f.getPath());
-            String content_type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            //Log.i("DataUploader",content_type); //text/comma-separated-values
+            else{
+                if(filePath!=null) {
+                    File file = new File(filePath);
 
-
-            String file_path = f.getAbsolutePath();
-            //Log.i("DataUploader","file --> "+file_path.substring(file_path.lastIndexOf("/") + 1));
-            OkHttpClient client = new OkHttpClient();
-            RequestBody file_body = RequestBody.create(MediaType.parse(content_type), f);
-
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("type", content_type)
-                    .addFormDataPart("email_id",email)
-                    .addFormDataPart("file", file_path.substring(file_path.lastIndexOf("/") + 1), file_body)
-                    .build();
-
-            Request request = new Request.Builder()
-                    .url("https://flask-upload-app.herokuapp.com/api/v1/upload")
-                    .post(requestBody)
-                    .build();
-
-            try {
-                Response response = client.newCall(request).execute();
-
-                if (!response.isSuccessful()) {
-                    throw new IOException("error: " + response);
-                } else {
-                    accelWriter.removeFileFromList(fileName);
-                    //Log.i("MainActivity", response.toString());
-                    //Log.i("DataUploader", response.body().string());
+                    if (file.delete()) {
+                        System.out.println("File deleted successfully");
+                    } else {
+                        System.out.println("Failed to delete the file");
+                    }
                 }
-            } catch (IOException e) {
-                //e.printStackTrace();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

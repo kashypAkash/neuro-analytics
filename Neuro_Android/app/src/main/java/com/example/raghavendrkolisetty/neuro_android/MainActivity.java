@@ -95,15 +95,11 @@ public class MainActivity extends AppCompatActivity {
             ContentResolver.setIsSyncable(mAccount, AUTHORITY, 1);
         }
 
-        Bundle b = new Bundle();
-        b.putString("email","testEmail");
-        ContentResolver.addPeriodicSync(
-                mAccount,
-                AUTHORITY,
-                b,
-                SECONDS_PER_MINUTE*SYNC_INTERVAL_IN_MINUTES);
         MainActivity.context = getApplicationContext();
+        AccelWriter accelWriter = new AccelWriter(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         File file = context.getExternalFilesDir("accel");
+        System.out.println("printing accel file "+file.getPath().toString());
         //Log.i("MainActivity", file.toString());
 
         if (ContextCompat.checkSelfPermission(this,
@@ -115,18 +111,29 @@ public class MainActivity extends AppCompatActivity {
                     1);
         }
         //Log.i("MainActivity",context.getFilesDir().toString());
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(Globals.PREF_KEY_ROOT_PATH,file.toString());
         editor.commit();
 
+        final String rootPath = accelWriter.getStringPref(Globals.PREF_KEY_ROOT_PATH);
         String userEmail = null;
         try {
             userEmail = prefs.getString("userEmail",null);
         }catch (Exception e){
             System.out.println("exception while getting useremail from prefs");
         }
-        AccelWriter accelWriter = new AccelWriter(context);
+        Bundle b = new Bundle();
+        b.putString("email", userEmail);
+        b.putString("rootPath",rootPath);
+        System.out.println("printing before sync "+userEmail);
+        System.out.println("printing before sync "+rootPath);
+        ContentResolver.addPeriodicSync(
+                mAccount,
+                AUTHORITY,
+                b,
+                SECONDS_PER_MINUTE*SYNC_INTERVAL_IN_MINUTES);
+
 //        accelWriter.start(Calendar.getInstance().getTime(),userEmail);
 //        accelWriter.init(accelWriter);
         DataCollector dataCollector = new DataCollector(accelWriter,userEmail);
@@ -135,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
 //        DataUploader dataUploader = new DataUploader(accelWriter,userEmail);
 //        Thread uploaderThread = new Thread(dataUploader);
 //        uploaderThread.start();
-        final String rootPath = accelWriter.getStringPref(Globals.PREF_KEY_ROOT_PATH);
+        //final String rootPath = accelWriter.getStringPref(Globals.PREF_KEY_ROOT_PATH);
         final Button button = (Button)findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
