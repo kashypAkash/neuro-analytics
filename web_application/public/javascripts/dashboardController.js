@@ -6,9 +6,8 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
 
         $scope.reportFeatureSelected = "xyz_mean";
         $scope.reportFeatures = ["xyz_mean", "xyz_absolute_deviation", "xyz_standard_deviation",
-            "xyz_max_deviation", "xyz_PSD_1", "xyz_PSD_1_sd", "xyz_PSD_3", "xyz_PSD_3_sd",
-            "xyz_PSD_6", "xyz_PSD_6_sd", "xyz_PSD_10", "xyz_PSD_10_sd", "xyz_absolute_deviation",
-            "xyz_max_deviation", "xyz_mean", "xyz_mean_sd", "xyz_standard_deviation"
+            "xyz_max_deviation", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6",  "xyz_PSD_10", "xyz_mean_sd",
+            "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd"
         ];
 
         $scope.getUserReports = function () {
@@ -79,7 +78,6 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
             console.log(feature);
 
             var data = $scope.reportData;
-
             var dataArray = [
                 [Date.UTC(2013, 5, 2, 10, 11, 12), 0.7695],
                 [Date.UTC(2013, 5, 3, 12, 13, 14), 0.7648],
@@ -91,20 +89,12 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
             for (var i = 0; i < data.length; i++) {
                 var dataArrayN_temp = [];
                 var parse_date = data[i].date.split("-");
-                if (i == 0) {
-                    console.log("Date: " + parse_date[0] + ":" + parse_date[1] + ":" + parse_date[2] + "hour" + data[i].hour +
-                        "minute" + data[i]['minute']);
-                }
                 dataArrayN_temp.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour, data[i]['minute']));
                 dataArrayN_temp.push(data[i][feature]);
 
                 dataArrayN.push(dataArrayN_temp);
             }
 
-            console.log("User data" + JSON.stringify(dataArrayN));
-
-            //dataArray contains the array of data [[x1, y1], [x2, y2], ...]
-//x is Date, y is temperature value (say)
 
 
             var dataLength = dataArrayN.length;
@@ -145,29 +135,6 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                 }]
             });
 
-
-            /*            Highcharts.chart('container', {
-                            title: {
-                                text: feature + ' values based on minutes'
-                            },
-                            xAxis: {
-                                title: {
-                                    text: 'Minute'
-                                },
-                                categories:$scope.minuteValues
-                            },
-
-                            yAxis: {
-                                title: {
-                                    text: feature
-                                }
-                            },
-
-                            series: [{
-                                data: $scope.featureValues
-                            }]
-                        });*/
-
             $http.get(
                 'http://ec2-18-217-79-183.us-east-2.compute.amazonaws.com/stat/all_data',
                 {cors: true}
@@ -191,8 +158,6 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                             unhealthy_data_line.push(unhealthy_temp_line);
                         }
                     }
-
-                    console.log("Healthy" + JSON.stringify(healthy_data_line));
 
                     Highcharts.chart('container2', {
                         chart: {
