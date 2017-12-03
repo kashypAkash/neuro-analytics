@@ -1,18 +1,18 @@
 "use strict"
-app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$cookies',
-    function($state, $scope, $window, $http, $cookies) {
+app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '$cookies',
+    function ($state, $scope, $window, $http, $cookies) {
 
         $scope.username = $cookies.get('username');
 
-        $scope.reportFeatures = ["xyz_mean", "xyz_absolute_deviation","xyz_standard_deviation",
-        "xyz_max_deviation", "xyz_PSD_1", "xyz_PSD_1_sd", "xyz_PSD_3", "xyz_PSD_3_sd",
+        $scope.reportFeatureSelected = "xyz_mean";
+        $scope.reportFeatures = ["xyz_mean", "xyz_absolute_deviation", "xyz_standard_deviation",
+            "xyz_max_deviation", "xyz_PSD_1", "xyz_PSD_1_sd", "xyz_PSD_3", "xyz_PSD_3_sd",
             "xyz_PSD_6", "xyz_PSD_6_sd", "xyz_PSD_10", "xyz_PSD_10_sd", "xyz_absolute_deviation",
             "xyz_max_deviation", "xyz_mean", "xyz_mean_sd", "xyz_standard_deviation"
         ];
 
-        $scope.getUserReports = function() {
+        $scope.getUserReports = function () {
             $http.post(
-
                 'https://flask-upload-app.herokuapp.com/api/v1/getUserReports',
                 {
                     email_id: $cookies.get('username')
@@ -20,28 +20,27 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                 {cors: true}
             )
                 .success(function (data) {
-                    $scope.reports =  data.reports;
-                }) .error(function (error) {
+                    $scope.reports = data.reports;
+                }).error(function (error) {
                 console.log('error', JSON.stringify(error))
             })
         };
 
-        $scope.viewReport =  function(report) {
+        $scope.viewReport = function (report) {
             $scope.selectedReport = report;
             $http.get(
                 'http://ec2-18-217-79-183.us-east-2.compute.amazonaws.com/stat/data?email_id=' +
-                $cookies.get('username') +'&result_id=' + report.id,
+                $cookies.get('username') + '&result_id=' + report.id,
 
                 {cors: true}
             )
                 .success(function (data) {
                     $scope.reportData = data;
-
                     $scope.reportDates = [];
-                    var report_dates_u= {};
+                    var report_dates_u = {};
 
-                    for(var i =0; i < data.length; i++) {
-                        if(!report_dates_u.hasOwnProperty(data[i].date)) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (!report_dates_u.hasOwnProperty(data[i].date)) {
                             $scope.reportDates.push(data[i].date);
                             report_dates_u[data[i].date] = 1;
                         }
@@ -52,21 +51,21 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                     $scope.accuracyValue = $scope.selectedReport.accuracy;
                     $scope.no_of_readings = $scope.selectedReport.no_of_readings;
 
-
-                }) .error(function (error) {
+                    $scope.drawGraph("xyz_mean");
+                }).error(function (error) {
                 console.log('error', JSON.stringify(error))
             });
 
             $scope.drawGraphs();
         };
 
-        $scope.getHour = function(date) {
+        $scope.getHour = function (date) {
             var data = $scope.reportData;
             $scope.reportDateHours = [];
-            var report_dates_hours_u= {};
+            var report_dates_hours_u = {};
 
-            for(var i =0; i < data.length; i++) {
-                if(data[i].date == date && !report_dates_hours_u.hasOwnProperty(data[i].hour)) {
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].date == date && !report_dates_hours_u.hasOwnProperty(data[i].hour)) {
                     $scope.reportDateHours.push(data[i].hour);
                     report_dates_hours_u[data[i].hour] = 1;
                 }
@@ -74,7 +73,7 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
 
         };
 
-        $scope.drawGraph = function(feature) {
+        $scope.drawGraph = function (feature) {
 
 
             console.log(feature);
@@ -82,83 +81,53 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
             var data = $scope.reportData;
 
             var dataArray = [
-                [Date.UTC(2013,5,2, 10, 11, 12),0.7695],
-                [Date.UTC(2013,5,3, 12, 13, 14),0.7648],
-                [Date.UTC(2013,5,4, 15, 16, 17),0.7645],
-                [Date.UTC(2013,5,5, 18, 20, 21),0.7638]];
+                [Date.UTC(2013, 5, 2, 10, 11, 12), 0.7695],
+                [Date.UTC(2013, 5, 3, 12, 13, 14), 0.7648],
+                [Date.UTC(2013, 5, 4, 15, 16, 17), 0.7645],
+                [Date.UTC(2013, 5, 5, 18, 20, 21), 0.7638]];
 
             var dataArrayN = [];
 
-            for(var i=0; i < data.length; i++) {
+            for (var i = 0; i < data.length; i++) {
                 var dataArrayN_temp = [];
                 var parse_date = data[i].date.split("-");
+                if (i == 0) {
+                    console.log("Date: " + parse_date[0] + ":" + parse_date[1] + ":" + parse_date[2] + "hour" + data[i].hour +
+                        "minute" + data[i]['minute']);
+                }
                 dataArrayN_temp.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour, data[i]['minute']));
                 dataArrayN_temp.push(data[i][feature]);
 
                 dataArrayN.push(dataArrayN_temp);
             }
 
-            console.log(JSON.stringify(dataArrayN));
+            console.log("User data" + JSON.stringify(dataArrayN));
 
             //dataArray contains the array of data [[x1, y1], [x2, y2], ...]
 //x is Date, y is temperature value (say)
 
 
-
-
-
- var datecheck = "2017-5-2";
- console.log(new Date(datecheck).getMonth());
-
-
-var dataLength = dataArrayN.length;
-                Highcharts.chart('container', {
-                    chart: {
-                        type: 'line',
-                        zoomType: 'x'
-                    },
-                    title: {
-                        text: feature + " values collected"
-                    },
-                    scrollbar: {
-                        enabled: dataLength > 60
-                    },
-                    xAxis: {
-                        title: {
-                            text: 'Date Time'
-                        },
-                        type: 'datetime',
-                        labels: {
-                            format: '{value:%Y-%b-%e %H:%M}'
-                        },
-                        max:dataLength > 60 ? dataArrayN[59][0] : null
-                    },
-
-                    yAxis: {
-                        title: {
-                            text: feature
-                        }
-                    },
-                    legend: {
-                        enabled: false
-                    },
-
-                    series: [{
-                        name: 'feature value',
-                        data: dataArrayN
-                    }]
-                });
-
-
-/*            Highcharts.chart('container', {
+            var dataLength = dataArrayN.length;
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'line',
+                    zoomType: 'x'
+                },
                 title: {
-                    text: feature + ' values based on minutes'
+                    text: feature + " values collected"
+                },
+                scrollbar: {
+                    enabled: dataLength > 60
                 },
                 xAxis: {
                     title: {
-                        text: 'Minute'
+                        text: 'Date Time'
                     },
-                    categories:$scope.minuteValues
+                    type: 'datetime',
+                    labels: {
+                        format: '{value:%Y-%b-%e %H:%M}'
+                    },
+                    max: dataLength > 60 ? dataArrayN[59][0] : null
                 },
 
                 yAxis: {
@@ -166,11 +135,38 @@ var dataLength = dataArrayN.length;
                         text: feature
                     }
                 },
+                legend: {
+                    enabled: false
+                },
 
                 series: [{
-                    data: $scope.featureValues
+                    name: 'feature value',
+                    data: dataArrayN.sort()
                 }]
-            });*/
+            });
+
+
+            /*            Highcharts.chart('container', {
+                            title: {
+                                text: feature + ' values based on minutes'
+                            },
+                            xAxis: {
+                                title: {
+                                    text: 'Minute'
+                                },
+                                categories:$scope.minuteValues
+                            },
+
+                            yAxis: {
+                                title: {
+                                    text: feature
+                                }
+                            },
+
+                            series: [{
+                                data: $scope.featureValues
+                            }]
+                        });*/
 
             $http.get(
                 'http://ec2-18-217-79-183.us-east-2.compute.amazonaws.com/stat/all_data',
@@ -180,8 +176,8 @@ var dataLength = dataArrayN.length;
                     var healthy_data_line = [];
                     var unhealthy_data_line = [];
 
-                    for(var  i= 0; i < data.length; i++) {
-                        if(data[i]['class'] == "Healthy") {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i]['class'] == "Healthy") {
                             var healthy_temp_line = [];
                             var parse_date = data[i].date.split("-");
                             healthy_temp_line.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour));
@@ -217,7 +213,7 @@ var dataLength = dataArrayN.length;
                             labels: {
                                 format: '{value:%Y-%b-%e %H:%M}'
                             },
-                            // max:dataLength > 60 ? dataArrayN[59][0] : null
+                            // max: dataLength > 60 ? dataArrayN[59][0] : null
                         },
 
                         yAxis: {
@@ -239,12 +235,12 @@ var dataLength = dataArrayN.length;
                             }]
                     });
 
-                }) .error(function (error) {
+                }).error(function (error) {
                 console.log('error', JSON.stringify(error))
             });
         };
 
-        $scope.drawGraphs =  function() {
+        $scope.drawGraphs = function () {
             $http.get(
                 'http://ec2-18-217-79-183.us-east-2.compute.amazonaws.com/stat/all_data',
                 {cors: true}
@@ -254,8 +250,8 @@ var dataLength = dataArrayN.length;
                     $scope.unhealthy_data = [];
                     $scope.user_data_values = [];
 
-                    for(var  i= 0; i < data.length; i++) {
-                        if(data[i]['class'] == "Healthy") {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i]['class'] == "Healthy") {
                             var healthy_temp = [];
                             healthy_temp.push(data[i]['xyz_mean']);
                             healthy_temp.push(data[i]['xyz_PSD_6_sd'])
@@ -270,7 +266,7 @@ var dataLength = dataArrayN.length;
 
                     var user_data = $scope.reportData;
 
-                    for(var i =0; i < user_data.length; i++) {
+                    for (var i = 0; i < user_data.length; i++) {
                         var user_data_temp = [];
                         user_data_temp.push(user_data[i]['xyz_mean']);
                         user_data_temp.push(user_data[i]['xyz_PSD_6_sd']);
@@ -351,15 +347,14 @@ var dataLength = dataArrayN.length;
                     });
 
 
-                }) .error(function (error) {
+                }).error(function (error) {
                 console.log('error', JSON.stringify(error))
             })
         };
 
 
-        $scope.getCurrentResult = function() {
+        $scope.getCurrentResult = function () {
             $http.post(
-
                 'https://flask-upload-app.herokuapp.com/api/v1/getUserCurrentReport',
                 {
                     email_id: $cookies.get('username')
@@ -375,15 +370,11 @@ var dataLength = dataArrayN.length;
                     $scope.ModelValue = data.model_name;
                     $scope.no_of_readings = data.no_of_readings;
                     $scope.viewReport(data);
-                }) .error(function (error) {
+                    // $scope.drawGraph("xyz_mean");
+                }).error(function (error) {
                 console.log('error', JSON.stringify(error))
             })
 
 
         };
-
-
-
-
-
     }]);
