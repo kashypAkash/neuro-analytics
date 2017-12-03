@@ -122,23 +122,6 @@
                     <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left" >
 
                         <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Date <span class="required">*</span></label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <select  id="reportDate" name="reportDate" class="select2_group form-control" ng-model="reportDateSelected" ng-options="date as date for date in reportDates"
-                                         ng-change="getHour(reportDateSelected)">
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Hour <span class="required">*</span></label>
-                            <div class="col-md-6 col-sm-6 col-xs-12">
-                                <select  id="reportDateHour" name="reportDateHour" class="select2_group form-control" ng-model="reportDateHourSelected" ng-options="hour as hour for hour in reportDateHours">
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
                             <label class="control-label col-md-3 col-sm-3 col-xs-12">Select Feature <span class="required">*</span></label>
                             <div class="col-md-6 col-sm-6 col-xs-12">
                                 <select  id="reportFeature" name="reportFeature" class="select2_group form-control" ng-model="reportFeatureSelected" ng-options="feature as feature for feature in reportFeatures">

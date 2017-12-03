@@ -47,9 +47,10 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                         }
                     }
 
-                    $scope.predictedValue = report.classification;
-                    $scope.accuracyValue = report.accuracy;
-                    $scope.no_of_readings = report.no_of_readings;
+
+                    $scope.predictedValue = $scope.selectedReport.classification;
+                    $scope.accuracyValue = $scope.selectedReport.accuracy;
+                    $scope.no_of_readings = $scope.selectedReport.no_of_readings;
 
 
                 }) .error(function (error) {
@@ -75,21 +76,80 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
 
         $scope.drawGraph = function(feature) {
 
-            console.log(feature + ";" +  $scope.reportDateSelected + ";" + $scope.reportDateHourSelected);
+            console.log(feature);
 
             var data = $scope.reportData;
 
-            $scope.featureValues = [];
-            $scope.minuteValues = [];
+            var dataArray = [
+                [Date.UTC(2013,5,2, 10, 11, 12),0.7695],
+                [Date.UTC(2013,5,3, 12, 13, 14),0.7648],
+                [Date.UTC(2013,5,4, 15, 16, 17),0.7645],
+                [Date.UTC(2013,5,5, 18, 20, 21),0.7638]];
+
+            var dataArrayN = [];
+
             for(var i=0; i < data.length; i++) {
-                if(data[i].date == $scope.reportDateSelected && data[i].hour == $scope.reportDateHourSelected ) {
-                    $scope.featureValues.push(data[i][feature]);
-                    $scope.minuteValues.push(data[i]['minute']);
-                }
+                var dataArrayN_temp = [];
+                var parse_date = data[i].date.split("-");
+                dataArrayN_temp.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour, data[i]['minute']));
+                dataArrayN_temp.push(data[i][feature]);
+
+                dataArrayN.push(dataArrayN_temp);
             }
 
+           // console.log(JSON.stringify(dataArrayN));
 
-            Highcharts.chart('container', {
+            //dataArray contains the array of data [[x1, y1], [x2, y2], ...]
+//x is Date, y is temperature value (say)
+
+
+
+
+
+ var datecheck = "2017-5-2";
+ console.log(new Date(datecheck).getMonth());
+
+
+var dataLength = dataArrayN.length;
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'line',
+                        zoomType: 'x'
+                    },
+                    title: {
+                        text: feature + "values collected"
+                    },
+                    scrollbar: {
+                        enabled: dataLength > 20
+                    },
+                    xAxis: {
+                        title: {
+                            text: 'Date Time'
+                        },
+                        type: 'datetime',
+                        labels: {
+                            format: '{value:%Y-%b-%e %H:%M}'
+                        },
+                        max:dataLength > 20 ? dataArrayN[19][0] : null
+                    },
+
+                    yAxis: {
+                        title: {
+                            text: feature
+                        }
+                    },
+                    legend: {
+                        enabled: false
+                    },
+
+                    series: [{
+                        name: 'feature value',
+                        data: dataArrayN
+                    }]
+                });
+
+
+/*            Highcharts.chart('container', {
                 title: {
                     text: feature + ' values based on minutes'
                 },
@@ -109,7 +169,7 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                 series: [{
                     data: $scope.featureValues
                 }]
-            });
+            });*/
         };
 
         $scope.drawGraphs =  function() {
@@ -118,7 +178,6 @@ app.controller('dashboardController', [ '$state', '$scope', '$window','$http','$
                 {cors: true}
             )
                 .success(function (data) {
-                    console.log(data);
                     $scope.healthy_data = [];
                     $scope.unhealthy_data = [];
                     $scope.user_data_values = [];
