@@ -30,8 +30,8 @@ f_predict = function(email_id="Apple", result_id) {
   data = fetch(rs, n=-1)
   huh = dbHasCompleted(rs)
   dbClearResult(rs)
-  
-  print(paste0("number of data rows: ", nrow(data)))
+  no_of_readings = nrow(data)
+  print(paste0("number of data rows: ", no_of_readings))
   
   df_accel = data %>%
     filter(time != "time") %>%
@@ -111,7 +111,8 @@ f_predict = function(email_id="Apple", result_id) {
               z_PSD_10 = mean(z_PSD_10)
     ) %>%
     filter(n.count >= 10) %>% 
-    mutate(date = as.POSIXct(day, format = "%m/%d/%Y")) %>%
+    #mutate(date = as.POSIXct(day, format = "%m/%d/%Y")) %>%
+    mutate(date = as.POSIXct(day, format = "%Y-%m-%d")) %>%
     ungroup() %>%
     select(-c(n.count, day))
   
@@ -141,11 +142,12 @@ f_predict = function(email_id="Apple", result_id) {
   probility_of_pd = mean(record_pred == "PD")
   print(paste0("prob: ", probility_of_pd))
   accuracy = ifelse(probility_of_pd > 0.5, probility_of_pd, 1-probility_of_pd)
+  print(paste0("accuracy: ", accuracy))
   predict_result = ifelse(probility_of_pd > 0.5, "Parkinson\\'s", "Healthy")
   print(predict_result)
   
   #update predict result to result table
-  sql = sprintf("update result set classification = '%s', accuracy = %f, date_taken = CONVERT_TZ(curdate(), 'UTC', 'America/Los_Angeles') where email_id = '%s' and id = %s;", predict_result, accuracy, email_id, result_id)
+  sql = sprintf("update result set classification = '%s', accuracy = %f, date_taken = CONVERT_TZ(curdate(), 'UTC', 'America/Los_Angeles'), no_of_readings = %s where email_id = '%s' and id = %s;", predict_result, accuracy, no_of_readings, email_id, result_id)
   rs = dbSendQuery(con, sql)
   dbClearResult(rs)
   
@@ -251,7 +253,7 @@ f_data = function(email_id="Apple", result_id) {
               z_PSD_10 = mean(z_PSD_10)
     ) %>%
     filter(n.count >= 10) %>% 
-    mutate(date = as.POSIXct(day, format = "%m/%d/%Y")) %>%
+    mutate(date = as.Date(day)) %>%
     ungroup() %>%
     select(-c(n.count, day))
   

@@ -73,9 +73,6 @@ train_data = df_accel_candidate[, selected_columns]
 control = trainControl(method = "cv", number = 5, savePredictions = TRUE, classProbs = TRUE)
 parameterGrid = expand.grid(mtry = c(2,3,4,5))
 
-model_weights <- ifelse(train_data$class == "Control",
-                        (1/table(train_data$class)[1]) * 0.5 * 1000,
-                        (1/table(train_data$class)[2]) * 0.5 * 1000)
 
 #LDA
 modelLDA = train(class ~.,
@@ -135,7 +132,6 @@ modelNearestNeighbors
 modelRandome = train(class ~.,
                      data = train_data,
                      method = "rf",
-                     weights = model_weights,
                      trControl = control,
                      tuneGrid = parameterGrid
 )
