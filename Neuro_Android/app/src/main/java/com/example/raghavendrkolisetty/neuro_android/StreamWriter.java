@@ -160,13 +160,13 @@ public class StreamWriter implements SensorEventListener {
                         // Text strings in CSV format
                         case OUTPUT_FORMAT_TXT:
                             if (i < (features.length - 1)) {
-                                stream.writeChars(Double.toString(features[i]) + ",");
+                                stream.writeBytes(Double.toString(features[i]) + ",");
 //                                Log.i("MainActivity","printing just before writing to file");
 //                                Log.i("MainActivity",features.length+"");
                                 //stream.writeBytes(Double.toString(features[i]) + ",");
                             }
                             else {
-                                stream.writeChars(Double.toString(features[i]));
+                                stream.writeBytes(Double.toString(features[i]));
                                 //stream.writeBytes(Double.toString(features[i]));
                             }
                             break;
@@ -187,12 +187,12 @@ public class StreamWriter implements SensorEventListener {
                             break;
                     }
                 }
-                //stream.writeChars(new Date().toString());
+                //stream.writeBytes(new Date().toString());
                 Date date = new Date();
-                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss.SS");
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String strDate= formatter.format(date);
-                stream.writeChars(","+strDate);
-                stream.writeChars(","+userEmail);
+                stream.writeBytes(","+strDate);
+                stream.writeBytes(","+userEmail);
 
                 // New line for CSV files
                 if (outputFormat == OUTPUT_FORMAT_TXT)
