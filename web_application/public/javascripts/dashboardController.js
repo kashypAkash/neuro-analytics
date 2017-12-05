@@ -5,10 +5,28 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
         $scope.username = $cookies.get('username');
 
         $scope.reportFeatureSelected = "xyz_mean";
-        $scope.reportFeatures = ["xyz_mean", "xyz_absolute_deviation", "xyz_standard_deviation",
-            "xyz_max_deviation", "xyz_PSD_1", "xyz_PSD_3", "xyz_PSD_6",  "xyz_PSD_10", "xyz_mean_sd",
-            "xyz_PSD_1_sd", "xyz_PSD_3_sd", "xyz_PSD_6_sd", "xyz_PSD_10_sd"
+        $scope.reportFeatures = ["Mean acceleration (xyz_mean)", "Absolute deviation (xyz_absolute_deviation)", "Standard deviation (xyz_standard_deviation)",
+            "Maximum deviation (xyz_max_deviation)", "Low frequency motion energy (xyz_PSD_1)",
+            "Low-mid frequency motion energy (xyz_PSD_3)", "Mid-high frequency motion energy (xyz_PSD_6)",
+            "High frequency motion energy (xyz_PSD_10)", "SD of mean accleration (xyz_mean_sd)",
+            " SD of low freq motion energy (xyz_PSD_1_sd)", "SD of low-mid freq motion energy (xyz_PSD_3_sd)",
+            "SD of mid-high freq motion energy (xyz_PSD_6_sd)", "SD of high freq motion energy (xyz_PSD_10_sd)"
         ];
+
+        var associativeArray = {};
+        associativeArray["Mean acceleration (xyz_mean)"] = "xyz_mean";
+        associativeArray["Absolute deviation (xyz_absolute_deviation)"] = "xyz_absolute_deviation";
+        associativeArray["Standard deviation (xyz_standard_deviation)"] = "xyz_standard_deviation";
+        associativeArray["Maximum deviation (xyz_max_deviation)"] = "xyz_max_deviation";
+        associativeArray["Low frequency motion energy (xyz_PSD_1)"] = "xyz_PSD_1";
+        associativeArray["Low-mid frequency motion energy (xyz_PSD_3)"] = "xyz_PSD_3";
+        associativeArray["Mid-high frequency motion energy (xyz_PSD_6)"] = "xyz_PSD_6";
+        associativeArray["High frequency motion energy (xyz_PSD_10)"] = "xyz_PSD_10";
+        associativeArray["SD of mean accleration (xyz_mean_sd)"] = "xyz_mean_sd";
+        associativeArray["SD of low freq motion energy (xyz_PSD_1_sd)"] = "xyz_PSD_1_sd";
+        associativeArray["SD of low-mid freq motion energy (xyz_PSD_3_sd)"] = "xyz_PSD_3_sd";
+        associativeArray["SD of mid-high freq motion energy (xyz_PSD_6_sd)"] = "xyz_PSD_6_sd";
+        associativeArray["SD of high freq motion energy (xyz_PSD_10_sd)"] = "xyz_PSD_10_sd";
 
         $scope.getUserReports = function () {
             $http.post(
@@ -50,7 +68,7 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                     $scope.accuracyValue = ($scope.selectedReport.accuracy * 100.0).toFixed(2);
                     $scope.no_of_readings = $scope.selectedReport.no_of_readings;
 
-                    $scope.drawGraph("xyz_mean");
+                    $scope.drawGraph("Mean acceleration (xyz_mean)");
                 }).error(function (error) {
                 console.log('error', JSON.stringify(error))
             });
@@ -90,7 +108,7 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                 var dataArrayN_temp = [];
                 var parse_date = data[i].date.split("-");
                 dataArrayN_temp.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour, data[i]['minute']));
-                dataArrayN_temp.push(data[i][feature]);
+                dataArrayN_temp.push(data[i][associativeArray[feature]]);
 
                 dataArrayN.push(dataArrayN_temp);
             }
@@ -148,13 +166,13 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                             var healthy_temp_line = [];
                             var parse_date = data[i].date.split("-");
                             healthy_temp_line.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour));
-                            healthy_temp_line.push(data[i][feature]);
+                            healthy_temp_line.push(data[i][associativeArray[feature]]);
                             healthy_data_line.push(healthy_temp_line);
                         } else if (data[i]['class'] == "Parkinson's") {
                             var unhealthy_temp_line = [];
                             var parse_date = data[i].date.split("-");
                             unhealthy_temp_line.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour));
-                            unhealthy_temp_line.push(data[i][feature]);
+                            unhealthy_temp_line.push(data[i][associativeArray[feature]]);
                             unhealthy_data_line.push(unhealthy_temp_line);
                         }
                     }
@@ -249,7 +267,7 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                         xAxis: {
                             title: {
                                 enabled: true,
-                                text: 'xyz_mean'
+                                text: 'Mean acceleration (xyz_mean)'
                             },
                             startOnTick: true,
                             endOnTick: true,
@@ -257,7 +275,7 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                         },
                         yAxis: {
                             title: {
-                                text: 'xyz_psd_6_sd'
+                                text: 'SD of mid-high freq motion energy (xyz_PSD_6_sd)'
                             }
                         },
                         legend: {
