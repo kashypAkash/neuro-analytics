@@ -63,7 +63,6 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                         }
                     }
 
-
                     $scope.predictedValue = $scope.selectedReport.classification;
                     $scope.accuracyValue = ($scope.selectedReport.accuracy * 100.0).toFixed(2);
                     $scope.no_of_readings = $scope.selectedReport.no_of_readings;
@@ -107,7 +106,7 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
             for (var i = 0; i < data.length; i++) {
                 var dataArrayN_temp = [];
                 var parse_date = data[i].date.split("-");
-                dataArrayN_temp.push(Date.UTC(parse_date[0], parse_date[1], parse_date[2], data[i].hour, data[i]['minute']));
+                dataArrayN_temp.push(Date.UTC(parse_date[0], parse_date[1] - 1, parse_date[2], data[i].hour, data[i]['minute']));
                 dataArrayN_temp.push(data[i][associativeArray[feature]]);
 
                 dataArrayN.push(dataArrayN_temp);
@@ -353,7 +352,6 @@ app.controller('dashboardController', ['$state', '$scope', '$window', '$http', '
                     $scope.ModelValue = data.model_name;
                     $scope.no_of_readings = data.no_of_readings;
                     $scope.viewReport(data);
-                    // $scope.drawGraph("xyz_mean");
                 }).error(function (error) {
                 console.log('error', JSON.stringify(error))
             })
